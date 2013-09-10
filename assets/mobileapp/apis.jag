@@ -9,13 +9,19 @@ var configs = require('/dataconf.json');
 var log =new Log();
 var store = require('/modules/store.js');
 var process = require("process");
+
 //	Refactor neccessary since the user routes don't belong here
 // Find away to send the user email to the MDM server
 router.get('apps/users/{userid}/devices', function(ctx){
 	var mam = require('/modules/mam.js').mam;
-	var mamServer = new mam({mdmServer:configs.mdmServer, user: ctx.userid});
-	var result = mamServer.getDevices(session.get('user').username, ctx.platform);
-	print(result.data);
+	var mamServer = new mam();
+	var user = require('/modules/user.js').current();
+	if(user!=undefined){
+		var result = mamServer.getDevices(user.username, ctx.platform);
+		print(result.data);
+	}else{
+		response.sendError(404);
+	}
 });
 
 /*
@@ -49,7 +55,7 @@ router.post('apps/devices/{deviceid}/install', function(ctx){
 		url=asset.attributes.overview_packageName;
 	}
 	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
-		url =  configs.mam.ip+"store/apps/install/ios/"+asset.id;
+		url =  configs.mam.ip+"/store/apps/install/ios/"+asset.id;
 		log.info(url);
 		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
 	}else if(asset.attributes.overview_platform.toUpperCase()=='ANDROID'){
@@ -154,6 +160,5 @@ function getResource(name){
 	f.close();
 	return cont;
 }
-
 router.process(request);
 %>
