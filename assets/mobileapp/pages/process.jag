@@ -1,12 +1,10 @@
 <%
 (function () {
     var user = require('/modules/user.js');
-
     if (!user.current()) {
         response.sendError(401, 'Unauthorized');
         return;
     }
-
     var aid = request.getParameter('asset'),
             space = user.userSpace(),
             configs = space.get('userAssets');

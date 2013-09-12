@@ -5,11 +5,10 @@ var serverURL = "https://192.168.1.1:9443/";
 var goose = require('/modules/goose.js').goose;
 var Handle = require("handlebars").Handlebars;
 var router = new goose({CONTEXT: "/store/"});
-var configs = require('/dataconf.json');
+var configs = require('/config/dataconf.json');
 var log =new Log();
 var store = require('/modules/store.js');
 var process = require("process");
-
 //	Refactor neccessary since the user routes don't belong here
 // Find away to send the user email to the MDM server
 router.get('apps/users/{userid}/devices', function(ctx){
@@ -23,7 +22,64 @@ router.get('apps/users/{userid}/devices', function(ctx){
 		response.sendError(404);
 	}
 });
+function spli(item){
+	if(item.attributes.images_screenshots){
+		item.attributes.images_screenshots =item.attributes.images_screenshots.split(',');
+	}
+	return item;
+}
+function getRegistry(){
+	server = new carbon.server.Server(),
+   	registry = new carbon.registry.Registry(server, {
+           username : 'admin',
+           tenantId : -1234
+    });
+	return registry;
+}
+function getAssetForPackage(packagename){
+	var registry = getRegistry();
+	var am = new carbon.registry.ArtifactManager(registry, 'mobileapp');
+	var items = am.list();
+	var arr= [];
+	for (var i = items.length - 1; i >= 0; i--){
+		var item = items[i];
+		if(item.attributes.overview_package_name==packagename){
+			arr.push(spli(item));
+		}
+	};
+	print(sp(arr));
+}
+router.post("apps/devices/{deviceid}/getApps", function(){
+	var user = require('/modules/user.js');
+    if (!user.current()) {
+        response.sendError(401, 'Unauthorized');
+        return;
+    }
+	var mam = require('/modules/mam.js').mam;
+	var mamServer = new mam();
+	
+	var space = user.userSpace(),
+            configs = space.get('userAssets');
+    
 
+    configs = configs ? parse(configs) : {};
+	if(!configs.mobileapps){
+		var apps = mam.getDeviceApps(ctx.deviceid)['received_data'];
+		if(apps){
+			for (app in apps){
+				var id = getAssetForPackage(app['package']).aid;
+			    var subscriptionPath = this.userSpace + "/installs";
+				var path = subscriptionPath + '/' + id;
+			    if(!user.userRegistry().exists(path)) {
+			        user.userRegistry().put(path, {
+			            name: id,
+			            deviceid : ctx.deviceid
+			        });
+			    }
+			}
+		}
+	}
+});
 /*
 	iOS device will first perform a request to the below end point - it will serve a plist file
 	with an endpoint to pickup the .ipa archive
@@ -42,6 +98,11 @@ router.get("apps/install/ios/{id}", function(ctx){
 
 // DEVICES APIS
 router.post('apps/devices/{deviceid}/install', function(ctx){
+	var user = require('/modules/user.js');
+    if (!user.current()) {
+        response.sendError(401, 'Unauthorized');
+        return;
+    }
 	var mam = require('/modules/mam.js').mam;
 	var mamServer = new mam();
 	var asset =  store.assetID(type, ctx.asset);

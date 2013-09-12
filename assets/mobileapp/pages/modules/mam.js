@@ -39,6 +39,8 @@ var mam = (function () {
 			});
 			return result;
     }
+
+	
     // prototype
     module.prototype = {
         constructor: module,
@@ -63,10 +65,10 @@ var mam = (function () {
 			log.info(result);
 			return result;
 		},
-		getUserApps: function(email){
+		getDeviceApps: function(deviceId){
 			var url = configs.mdm.api+'/store/users/apps';
 			var data = email;
-			var result = jsonPost(url, {email:email});
+			var result = jsonPost(url, {deviceId:deviceId});
 			return result;
 		},
 		authenticate: function(username, password){
