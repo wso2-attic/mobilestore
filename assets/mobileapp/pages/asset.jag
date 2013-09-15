@@ -10,7 +10,7 @@ var asset,
         sso = configs.ssoConfiguration.enabled,
         inDashboard = false,
         matcher = new URIMatcher(request.getRequestURI());
-
+log.info("user>>>"+user);
 matcher.match('/{context}' + config.assetUrlPrefix + '/{type}/{aid}') ||
 matcher.match('/{context}' + config.assetUrlPrefix + '/{type}/{aid}/{+suffix}');
 aid = matcher.elements().aid;

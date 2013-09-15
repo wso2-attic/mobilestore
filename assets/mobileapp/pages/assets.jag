@@ -100,8 +100,7 @@ var caramel;
 	var mam = new mamModule();
 	var devices = [];
 	if(user.current(session)!=undefined){
-		log.info(stringify(user.current(session)));
-		var devices = mam.getDevices(String(user.current(session).username),os);
+		devices = parse(mam.getDevices(String(user.current(session).username),os));
 	}
     caramel.render({
         title: 'Store | Assets',

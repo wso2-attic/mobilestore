@@ -2,17 +2,16 @@
 <div class="container" style="padding-top: 20px;">
 	<h4>My Devices</h4>
 	<div class="span10">
-
-		{{#../devices}}
-		<div data-dismiss="modal"  class="span1 text-center device-image-block" style="text-align: center; cursor: pointer"
-		data-device-id="{{id}}">
-			<img class="device-image" style="height: 100px" data-device-id="{{id}}"
-			src="/assets/wso2mobile/img/models/{{model}}.png">
-			<div class="text-center" style="font-size: x-small">
-				{{name}}
+			{{#../devices}}
+			<div data-dismiss="modal"  class="span1 text-center device-image-block" style="text-align: center; cursor: pointer"
+			data-device-id="{{id}}">
+				<img class="device-image" style="height: 100px" data-device-id="{{id}}"
+				src="/assets/wso2mobile/img/models/{{model}}.png">
+				<div class="text-center" style="font-size: x-small">
+					{{name}}
+				</div>
 			</div>
-		</div>
-		{{/../devices}}
+			{{/../devices}}
 
 	</div>
 </div>

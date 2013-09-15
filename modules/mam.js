@@ -62,7 +62,7 @@ var mam = (function () {
 			var url = configs.mdm.api+'/store/users/devices';
 			var data = email;
 			var result = jsonPost(url, {email:email, platform: platform});
-			result = parse(unescape(stringify(result.data)));
+			log.info(result);
 			return result;
 		},
 		getDeviceApps: function(deviceId){
