@@ -19,6 +19,7 @@ var extension_parser=function(){
 	    if(type=='*'){
 	        return this.globalTemplate;
 	    }
+				
 		for each(var  item in this.templates){
 			
 			if(item.name==type){
