@@ -252,7 +252,11 @@ Store.prototype.subscriptions = function (type) {
         type = path.substr(path.lastIndexOf('/') + 1);
         //obj = obj();
         obj.forEach(function (path) {
-            items.push(that.asset(type, path.substr(path.lastIndexOf('/') + 1)))
+			var i = that.asset(type, path.substr(path.lastIndexOf('/') + 1));
+			if(type=="mobileapp"){
+				i.subscribed_devices = path.devices; 
+			}
+			items.push(i);
         });
         assetz[type] = items;
     };

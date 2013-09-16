@@ -64,10 +64,27 @@ router.get("apps/devices/{deviceid}/getApps", function(ctx){
 	var mamServer = new mam();
 	var apps = mamServer.getDeviceApps(ctx.deviceid)['received_data'];
 	log.info(apps);
-    //var id = getAssetForPackage(app['package']).aid;
 	var subscriptions = store.subscriptions(type);
 	for(subscription in subscriptions){
 		log.info(subscription);
+		for(app in apps){
+			log.info(app);
+			if(app.package == subscription.overview_package){
+				var path = "/subscriptions/"+subscription.aid;
+				if(store.registry.exists(path)) {
+					var devicelist = store.registry.content(path).devices;
+					if(devicelist){
+						devicelist = {};
+					}
+					devicelist.push(ctx.deviceid);
+			        store.registry.put(path, {
+			            name: id,
+			            content: '',
+						devices: devicelist
+			        });
+			    }
+			}
+		}
 	}
 
 });
