@@ -7,8 +7,7 @@ var Handle = require("handlebars").Handlebars;
 var router = new goose({CONTEXT: "/store/"});
 var configs = require('/config/dataconf.json');
 var log =new Log();
-log.info("inside");
-var store = require('/modules/store.js');
+var store = require('/modules/store.js').store(request, session);
 var process = require("process");
 //	Refactor neccessary since the user routes don't belong here
 // Find away to send the user email to the MDM server
@@ -62,7 +61,7 @@ router.get("apps/devices/{deviceid}/getApps", function(ctx){
    	}
 	var mam = require('/modules/mam.js').mam;
 	var mamServer = new mam();
-	var apps = mamServer.getDeviceApps(ctx.deviceid)['received_data'];
+	var apps = mamServer.getDeviceApps(ctx.deviceid);
 	log.info(apps);
 	var subscriptions = store.subscriptions(type);
 	for(subscription in subscriptions){
@@ -107,13 +106,14 @@ router.get("apps/install/ios/{id}", function(ctx){
 // DEVICES APIS
 router.post('apps/devices/{deviceid}/install', function(ctx){
 	var user = require('/modules/user.js');
-    if (!user.current()) {
+	
+    if (!user.current(session)) {
         response.sendError(401, 'Unauthorized');
         return;
     }
 	var mam = require('/modules/mam.js').mam;
 	var mamServer = new mam();
-	var asset =  store.assetID(type, ctx.asset);
+	var asset =  store.asset(type, ctx.asset);
 	var url = asset.attributes.overview_url; 
 	log.info(asset.attributes.overview_type);
 	if(asset.attributes.overview_platform.toUpperCase()=='WEBAPP'){
