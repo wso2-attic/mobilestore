@@ -23,9 +23,8 @@ $(function() {
 			performInstalltion(device, appToInstall);
 		}	
 				
-		var parent = $(this).parent().parent().parent();
-		asset.process(parent.data('type'), parent.data('id'), location.href);
-		alert("here");
+		
+		//alert("here");
 		event.stopPropagation();
 	});
 
