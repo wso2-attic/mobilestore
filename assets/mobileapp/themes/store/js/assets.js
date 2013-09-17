@@ -7,13 +7,24 @@
 
 var opened = false, currentPage = 1, totalPages;
 
+var appToInstall = null;
+
 $(function() {
 	var paging = store.asset.paging;
 	paging.current = 1;
 
 	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
-		var parent = $(this).parent().parent().parent();
-		asset.process(parent.data('type'), parent.data('id'), location.href);
+		
+		var device = getURLParameter("device");	
+		appToInstall = $(this).data("app");	
+		if(!(device > 0)){
+			$('#devicesList').modal('show');
+		}else{
+			performInstalltion(device, appToInstall);
+		}	
+				
+		
+		//alert("here");
 		event.stopPropagation();
 	});
 
