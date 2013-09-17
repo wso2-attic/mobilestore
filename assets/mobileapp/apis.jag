@@ -50,7 +50,9 @@ function getAssetForPackage(packagename){
 	print(sp(arr));
 }
 router.get("apps/test", function(ctx){
-	
+	var user = require('/modules/user.js'), 
+		store = require("/modules/store.js").store(request, session);
+	store.subscribe("mobileapp", "7a6f9269-a156-4d35-a39d-4b241a3783cf");
 });
 router.get("apps/devices/{deviceid}/getApps", function(ctx){
 	var user = require('/modules/user.js'), 

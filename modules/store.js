@@ -252,6 +252,8 @@ Store.prototype.subscriptions = function (type) {
         type = path.substr(path.lastIndexOf('/') + 1);
         //obj = obj();
         obj.forEach(function (path) {
+			log.info('sfs');
+			log.info(path);
 			var i = that.asset(type, path.substr(path.lastIndexOf('/') + 1));
 			if(type=="mobileapp"){
 				i.subscribed_devices = path.devices; 

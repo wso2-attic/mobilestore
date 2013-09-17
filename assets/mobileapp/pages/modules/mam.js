@@ -71,7 +71,6 @@ var mam = (function () {
 			var data = email;
 			var result = jsonPost(url, {deviceId:deviceId});
 			// log.info(stringify(result));
-			log.info(">>>>in");
 			return result;
 		},
 		authenticate: function(username, password){
