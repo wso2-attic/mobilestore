@@ -59,9 +59,8 @@ function performInstalltion(device, app){
 			     		      
 	});
 	
-	$( document ).ajaxComplete(function() {
-		var parent = $(this).parent().parent().parent();
-		asset.process(parent.data('type'), parent.data('id'), location.href);
+	$( document ).ajaxComplete(function() {		
+		asset.process("mobileapp",app, location.href);
 	});
 }
 

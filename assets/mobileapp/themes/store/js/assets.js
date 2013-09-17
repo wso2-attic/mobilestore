@@ -19,12 +19,12 @@ $(function() {
 		appToInstall = $(this).data("app");	
 		if(!(device > 0)){
 			$('#devicesList').modal('show');
-		}else{
+		}else{			
 			performInstalltion(device, appToInstall);
-		}	
-				
+		}				
+	
 		
-		//alert("here");
+	
 		event.stopPropagation();
 	});
 
