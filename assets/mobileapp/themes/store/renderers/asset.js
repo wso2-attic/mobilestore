@@ -1,6 +1,4 @@
-var render = function(theme, data, meta, require) {
-	
-	
+var render = function(theme, data, meta, require) {	
 	
 	var images = data.asset.attributes.images_screenshots.split(",");
 	data.asset.attributes.images_screenshots = images;
