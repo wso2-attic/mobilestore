@@ -223,6 +223,7 @@ Store.prototype.subscriptionSpace = function(type) {
 
 Store.prototype.subscribe = function(type, id) {
     var path = this.subscriptionSpace(type) + '/' + id;
+	log.info("registrypath >>>>"+path);
     if(!this.registry.exists(path)) {
         this.registry.put(path, {
             name: id,
@@ -252,11 +253,15 @@ Store.prototype.subscriptions = function (type) {
         type = path.substr(path.lastIndexOf('/') + 1);
         //obj = obj();
         obj.forEach(function (path) {
-			log.info('sfs');
-			log.info(path);
 			var i = that.asset(type, path.substr(path.lastIndexOf('/') + 1));
 			if(type=="mobileapp"){
-				i.subscribed_devices = path.devices; 
+				var description = registry.get(path).description;
+				log.info("Description>>> "+description);
+				if(description!=null){
+					try{
+						i.subscribed_devices = parse(registry.get(path).description).devices;
+					}catch(e){}
+				}
 			}
 			items.push(i);
         });

@@ -50,9 +50,6 @@ function getAssetForPackage(packagename){
 	print(sp(arr));
 }
 router.get("apps/test", function(ctx){
-	var user = require('/modules/user.js'), 
-		store = require("/modules/store.js").store(request, session);
-	store.subscribe("mobileapp", "7a6f9269-a156-4d35-a39d-4b241a3783cf");
 });
 router.get("apps/devices/{deviceid}/getApps", function(ctx){
 	var user = require('/modules/user.js'), 
@@ -64,30 +61,30 @@ router.get("apps/devices/{deviceid}/getApps", function(ctx){
 	var mam = require('/modules/mam.js').mam;
 	var mamServer = new mam();
 	var apps = mamServer.getDeviceApps(ctx.deviceid);
-	log.info(apps);
-	var subscriptions = store.subscriptions(type);
-	for(subscription in subscriptions){
-		log.info(subscription);
-		for(app in apps){
-			log.info(app);
-			if(app.package == subscription.overview_package){
-				var path = "/subscriptions/"+subscription.aid;
+	
+	var subscriptions = store.subscriptions(type)['mobileapp'];
+	for (var j=0; j<subscriptions.length; j++){
+		var subscription = subscriptions[j];
+		for (var i=0; i<apps.length; i++){
+		  var app = apps[i];
+			if(app.package == subscription.attributes.overview_packagename){
+				var path = store.userSpace +"/subscriptions/mobileapp/"+subscription.id;
 				if(store.registry.exists(path)) {
-					var devicelist = store.registry.content(path).devices;
-					if(devicelist){
-						devicelist = {};
+					var devicelist = subscription.subscribed_devices;
+					log.info(stringify(devicelist));
+					if(devicelist==null){
+						devicelist = [];
 					}
-					devicelist.push(ctx.deviceid);
-			        store.registry.put(path, {
-			            name: id,
-			            content: '',
-						devices: devicelist
-			        });
+					log.info("devicelist>>> "+devicelist);
+					if(devicelist.indexOf(ctx.deviceid)==-1){
+						devicelist.push(ctx.deviceid);
+						var packet = {'devices': devicelist}
+						store.registry.put(path, { name: app.id, content: ' ', description: stringify(packet)});
+					}
 			    }
 			}
 		}
 	}
-
 });
 /*
 	iOS device will first perform a request to the below end point - it will serve a plist file
