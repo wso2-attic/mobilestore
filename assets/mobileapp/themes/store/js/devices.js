@@ -55,13 +55,9 @@ function performInstalltion(device, app){
 			      url: "/store/apps/devices/" + device + "/install", 
 			      type: "POST",
 			      dataType: "json",	
-			      data : {"asset": app}				     
-			     		      
+			      data : {"asset": app}			      
 	});
-	
-	$( document ).ajaxComplete(function() {		
-		asset.process("mobileapp",app, location.href);
-	});
+	asset.process("mobileapp",app, location.href);
 }
 
 

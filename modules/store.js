@@ -227,7 +227,7 @@ Store.prototype.subscribe = function(type, id) {
     if(!this.registry.exists(path)) {
         this.registry.put(path, {
             name: id,
-            content: ''
+            content: ' '
         });
     }
 };
