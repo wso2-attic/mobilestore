@@ -132,14 +132,19 @@ router.post('apps/devices/{deviceid}/install', function(ctx){
 });
 
 router.post('apps/devices/{deviceid}/uninstall', function(ctx){
-	var asset =  store.assetID(type, ctx.asset);
-	var install_asset = asset.attributes.overview_packageName; 
+	var user = require('/modules/user.js');
+	
+    if (!user.current(session)) {
+        response.sendError(401, 'Unauthorized');
+        return;
+    }
+	var mam = require('/modules/mam.js').mam;
+	var mamServer = new mam();
+	var asset =  store.asset(type, ctx.asset);
+	var install_asset = asset.attributes.overview_packageName;
 	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
 		install_asset = asset.attributes.overview_appid;
 	}
-	//saveAppToUser(ctx.id);
-	var mam = require('/modules/mam.js').mam;
-	var mamServer = new mam();
 	mamServer.uninstall(install_asset, ctx.deviceid);
 });
 
