@@ -24,7 +24,8 @@ var caramel;
 	var recentAssets = recentGadgets.concat(recentSites,recentEBooks);
     var subscriptions = store.subscriptions();
 	count = Object.keys(subscriptions).length;
-
+	
+	
 	for(var i = 0; i < types.length; i++) {
 		tag = {
 			url : '/assets/' + types[i] + '?page=1&tag=',
@@ -34,13 +35,13 @@ var caramel;
 	}
 
 	caramel.render({
-		'title' : 'Store | My Bookmarks',
+		'title' : 'Store | My Apps',
 		'navigation' : site.navigation(store.tenantId, {
 			sso : sso,
 			user : user
 		}),
 		 search: {
-			mainPage : "My bookmarks",
+			mainPage : "My apps",
 			subPage : "",
 			isTopAssets : false,
             searchFields : rxtAttributes
@@ -48,6 +49,7 @@ var caramel;
 		'userAssets' : count > 0 ? subscriptions : null,
 		'recentAssets' : recentAssets,
 		'tags' : tags
+		
 	});
 }());
 %>
