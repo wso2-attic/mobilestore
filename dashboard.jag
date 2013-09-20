@@ -24,7 +24,14 @@ var caramel;
 	var recentAssets = recentGadgets.concat(recentSites,recentEBooks);
     var subscriptions = store.subscriptions();
 	count = Object.keys(subscriptions).length;
-	
+	var mamModule = require('modules/mam.js').mam;
+	var os = request.getParameter("os");
+	var mam = new mamModule();
+	var devices = [];
+	if(user!=undefined){
+		devices = parse(mam.getDevices(String(user.username),os));
+	}
+	log.info(">>>devices "+stringify(devices));
 	
 	for(var i = 0; i < types.length; i++) {
 		tag = {

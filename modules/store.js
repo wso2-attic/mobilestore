@@ -256,7 +256,6 @@ Store.prototype.subscriptions = function (type) {
 			var i = that.asset(type, path.substr(path.lastIndexOf('/') + 1));
 			if(type=="mobileapp"){
 				var description = registry.get(path).description;
-				log.info("Description>>> "+description);
 				if(description!=null){
 					try{
 						i.subscribed_devices = parse(registry.get(path).description).devices;
