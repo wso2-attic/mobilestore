@@ -22,10 +22,9 @@ var render = function (theme, data, meta, require) {
 */
 
 
-var render = function (theme, data, meta, require) {
+var render = function (theme, data, meta, require) {	
 	
-	
-		
+			
     theme('2-column-right', {
         title: data.title,
         navigation: [
@@ -44,6 +43,7 @@ var render = function (theme, data, meta, require) {
                 partial: 'userAssets',
                 context: {
         		'userAssets': data.userAssets,
+        		'devices': data.devices,
         		'URL': data.URL
 		}
             }

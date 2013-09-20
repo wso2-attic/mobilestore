@@ -55,7 +55,8 @@ var caramel;
 		},
 		'userAssets' : count > 0 ? subscriptions : null,
 		'recentAssets' : recentAssets,
-		'tags' : tags
+		'tags' : tags,
+		'devices': devices
 		
 	});
 }());
