@@ -22,9 +22,8 @@
 								</button>
 								<h4 id="myModalLabel">Select your device to uninstall</h4>
 							</div>
-							<div class="modal-body">
-
-								{{#../../../devices}}
+							<div class="modal-body">								
+								{{#../subscribed_devices}}
 								<div data-dismiss="modal"  class="span1 text-center device-image-block-modal  asset-remove-btn" style="text-align: center; cursor: pointer"
 								data-device-id="{{id}}" type="{{../../../key}}" data-aid="{{../../id}}">
 									<img class="device-image-modal" style="height: 100px" data-device-id="{{id}}" 
@@ -33,7 +32,7 @@
 										{{name}}
 									</div>
 								</div>
-								{{/../../../devices}}
+								{{/../subscribed_devices}}
 
 							</div>
 						</div>
