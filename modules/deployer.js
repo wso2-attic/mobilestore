@@ -1,12 +1,12 @@
-var site = function (options) {
+var site = function (tenantId, options) {
     var tag, tags, rate, asset, assets,
         carbon = require('carbon'),
         store = require('/modules/store.js'),
         path = '/_system/governance/sites/' + options.provider + '/' + options.name + '/' + options.version,
         server = require('/modules/server.js'),
         //site = require('/modules/site-browser.js'),
-        um = server.userManager();
-        registry = server.systemRegistry(),
+        um = server.userManager(tenantId),
+        registry = server.systemRegistry(tenantId),
         am = store.assetManager('site', registry);
 
     asset = {
@@ -54,14 +54,14 @@ var site = function (options) {
 
 };
 
-var ebook = function (options) {
+var ebook = function (tenantId, options) {
     var tag, tags, rate, asset, assets,
         carbon = require('carbon'),
         store = require('/modules/store.js'),
         path = '/_system/governance/ebooks/' + options.provider + '/' + options.name + '/' + options.version,
         server = require('/modules/server.js'),
-        um = server.userManager();
-        registry = server.systemRegistry(),
+        um = server.userManager(tenantId),
+        registry = server.systemRegistry(tenantId),
         am = store.assetManager('ebook', registry);
 
     asset = {
@@ -113,20 +113,20 @@ var ebook = function (options) {
 
 }
 
-var gadget = function (options) {
+var gadget = function (tenantId, options) {
     var tag, tags, rate, asset, assets,
         carbon = require('carbon'),
         store = require('/modules/store.js'),
         path = '/_system/governance/gadgets/' + options.provider + '/' + options.name + '/' + options.version,
         server = require('/modules/server.js'),
-        um = server.userManager(),
-        registry = server.systemRegistry(),
+        um = server.userManager(tenantId),
+        registry = server.systemRegistry(tenantId),
         am = store.assetManager('gadget', registry);
 
     asset = {
         "name": options.name,
-        "lifecycle": null,
-        "lifecycleState": null,
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState":"Published",
         "attributes": {
             "overview_status": options.status,
             "overview_name": options.name,
@@ -206,10 +206,10 @@ var buildEBookRXT = function (options) {
     return rxt;
 };
 
-var sso = function (options) {
+var sso = function (tenantId, options) {
     var path = '/_system/config/repository/identity/SAMLSSO/' + options.issuer64,
         server = require('/modules/server.js'),
-        registry = server.systemRegistry();
+        registry = server.systemRegistry(tenantId);
     registry.put(path, {
         properties: {
             'Issuer': options.issuer,

@@ -1,16 +1,18 @@
 <%
 var caramel;
 ( function() {
-	var site, count,tag, type = 'gadget',
-	log = new Log(), store = require('/modules/store.js'),
-    types = store.assetTypes(),
-	user = require('/modules/user.js').current(), 
-	tags = [], 
-	sso = configs.ssoConfiguration.enabled;
+    var site, count, tag,
+            type = 'gadget',
+            log = new Log(),
+            store = require('/modules/store.js').store(request, session),
+            types = store.assetTypes(),
+            user = require('/modules/user.js').current(session),
+            tags = [],
+            sso = configs.ssoConfiguration.enabled;
 	caramel = require('caramel');
- 	
- 	var rxtAttributes = require('modules/util.js').getRXTAttributes(type);
- 	
+
+ 	var rxtAttributes = require('modules/util.js').getRXTAttributes(store.tenantId, type);
+
 	if(!user) {
 		response.sendRedirect(caramel.configs().context);
 		return;
@@ -20,8 +22,17 @@ var caramel;
 	recentSites = store.recentAssets("site", 3);
 	recentEBooks = store.recentAssets("ebook", 3);
 	var recentAssets = recentGadgets.concat(recentSites,recentEBooks);
-	count = Object.keys(store.userAssets()).length;
-	 
+    var subscriptions = store.subscriptions();
+	count = Object.keys(subscriptions).length;
+	var mamModule = require('modules/mam.js').mam;
+	var os = request.getParameter("os");
+	var mam = new mamModule();
+	var devices = [];
+	if(user!=undefined){
+		devices = parse(mam.getDevices(String(user.username),os));
+	}
+	log.info(">>>devices "+stringify(devices));
+	
 	for(var i = 0; i < types.length; i++) {
 		tag = {
 			url : '/assets/' + types[i] + '?page=1&tag=',
@@ -31,20 +42,22 @@ var caramel;
 	}
 
 	caramel.render({
-		'title' : 'Store | My Bookmarks',
-		'navigation' : site.navigation({
+		'title' : 'Store | My Apps',
+		'navigation' : site.navigation(store.tenantId, {
 			sso : sso,
 			user : user
 		}),
 		 search: {
-			mainPage : "My bookmarks",
+			mainPage : "My apps",
 			subPage : "",
 			isTopAssets : false,
             searchFields : rxtAttributes
 		},
-		'userAssets' : count > 0 ? store.userAssets() : null,
+		'userAssets' : count > 0 ? subscriptions : null,
 		'recentAssets' : recentAssets,
-		'tags' : tags
+		'tags' : tags,
+		'devices': devices
+		
 	});
 }());
 %>
