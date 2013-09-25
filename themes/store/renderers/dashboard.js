@@ -21,27 +21,8 @@ var render = function (theme, data, meta, require) {
 
 */
 
-var render = function (theme, data, meta, require) {	
-	
-	
-		
-	for(var i = 0; i < data.userAssets.mobileapp.length; i++){
-		var subscribedDevices = data.userAssets.mobileapp[i].subscribed_devices;
-		var subscribeDevicesWithDetails = new Array();
-		if(subscribedDevices != null){
-			for(var j = 0; j < subscribedDevices.length; j++){
-				for(var k = 0; k < data.devices.length; k++){					
-					if(subscribedDevices[j] == String(data.devices[k].id)){						
-						subscribeDevicesWithDetails.push({id :subscribedDevices[j], name: data.devices[k].name, model: data.devices[k].model });
-					}
-				}
-				
-			}			
-		}
-		data.userAssets.mobileapp[i].subscribed_devices = subscribeDevicesWithDetails;		
-	}
-			
-				
+
+var render = function (theme, data, meta, require) {
     theme('2-column-right', {
         title: data.title,
         navigation: [
@@ -60,13 +41,11 @@ var render = function (theme, data, meta, require) {
                 partial: 'userAssets',
                 context: {
         		'userAssets': data.userAssets,
-        		'devices': data.devices,
         		'URL': data.URL
 		}
             }
         ],
         right: [
-        
             {
                 partial: 'recent-assets',
                 context: data.recentAssets

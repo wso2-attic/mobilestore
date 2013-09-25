@@ -1,5 +1,11 @@
 $(function() {
 
+    var showError = function (message) {
+        var msg = message.replace(/[0-9a-z.+]+:\s/i, '');
+        $('#register-alert').html(msg).fadeIn('fast');
+        $('#btn-signin').text('Sign in').removeClass('disabled');
+    };
+
 	var login = function() {
 		if (!$("#form-login").valid())
 			return;
@@ -8,18 +14,23 @@ $(function() {
 		var username = $('#inp-username').val();
 		var password = $('#inp-password').val();
 
-		caramel.post('/apis/user/login', JSON.stringify({
-			username : username,
-			password : password
-		}), function(data) {
-			if (!data.error) {
-				location.reload();
-			} else {
-				var msg = data.message.replace(/[0-9a-z.+]+:\s/i, '');
-				$('#login-alert').html(msg).fadeIn('fast');
-				$('#btn-signin').text('Sign in').removeClass('disabled');
-			}
-		}, "json");
+        caramel.ajax({
+            type: 'POST',
+            url: '/apis/user/login',
+            data: JSON.stringify({
+                username: username,
+                password: password
+            }),
+            success: function (data) {
+                if (!data.error) {
+                    location.reload();
+                } else {
+                    showError(data.message);
+                }
+            },
+            contentType: 'application/json',
+            dataType: 'json'
+        });
 	};
 
 	var register = function() {
@@ -32,9 +43,7 @@ $(function() {
 			if (!data.error) {
 				location.reload();
 			} else {
-				var msg = data.message.replace(/[0-9a-z.+]+:\s/i, '');
-				$('#register-alert').html(msg).fadeIn('fast');
-				$('#btn-signin').text('Sign in').removeClass('disabled');
+				showError(data.message);
 			}
 		}, "json");
 	};
@@ -77,8 +86,6 @@ $(function() {
 	$('.icon-gadget').addClass('icon-cog');
 	$('.icon-site').addClass('icon-globe');
     $('.icon-ebook').addClass('icon-book');
-    $('.icon-mobileapp').addClass('icon-mobile-phone');
-    
 
 	$('#sso-login').click(function() {
 		$('#sso-login-form').submit();
@@ -93,14 +100,18 @@ $(function() {
         var url = $(this).attr('href');
         window.location = url;
     });
-	
+
 	$(".dropdown-menu").niceScroll();
-	
+
 	$(".dropdown-menu").mouseover(function() {
 		$('div[id^="ascrail"]').css('visibility', 'visible');
 		$(".dropdown-menu").getNiceScroll().resize();
 	}).mouseleave(function() {
 		$('div[id^="ascrail"]').css('visibility', 'hidden');
+	});
+	
+	$('.dropdown-toggle').click(function(){
+		window.location = $(this).attr('href');
 	});
 
 });

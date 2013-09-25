@@ -151,7 +151,6 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
         this.type = type;
         this.username = registry.username;
         Packages.org.wso2.carbon.governance.api.util.GovernanceUtils.loadGovernanceArtifacts(registry.registry);
-		log.info(">>>registry "+stringify(registry));
         this.manager = new carbon.registry.ArtifactManager(registry, type);
         this.sorter = new Sorter(registry);
     };

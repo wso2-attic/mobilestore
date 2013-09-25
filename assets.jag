@@ -1,7 +1,7 @@
 <%
 var caramel;
 (function () {
-    var assets, paging, count, current, total, loggedUser, sso, url, mainPage, subPage,
+    var assets, paging, count, current, total, loggedUser, sso, url, mainPage, subPage,title
             options = {},
             log = new Log(),
             user = require('/modules/user.js'),
@@ -11,7 +11,6 @@ var caramel;
             tag = request.getParameter('tag'),
             query = request.getParameter('query'),
             fields = request.getParameter('fields'),
-            ssoUser = session.get('LOGGED_IN_USER'),
             event = require('/modules/event.js');
 
     caramel = require('caramel');
@@ -20,7 +19,7 @@ var caramel;
 
     sso = configs.ssoConfiguration.enabled;
 
-    loggedUser = (sso && ssoUser) ? {username: ssoUser} : user.current(session);
+    loggedUser = user.current(session);
 
     url = '/assets/' + type + '/?' + (tag ? 'tag=' + tag + '&' : '') + (query ? 'query=' + query + '&' : '');
 
@@ -29,8 +28,9 @@ var caramel;
     paging = store.assetsPaging(request);
 
     mainPage = type;
-
-
+    
+    title = store.assetLinks(type).title;
+    
     if (tag) {
 
         total = store.assetCount(type, {
@@ -152,6 +152,7 @@ var caramel;
         sorting: {
             url: url + 'sort='
         },
+        myAssets : { type: type, title: title },
         recentAssets: function () {
             return store.recentAssets(type);
         }
