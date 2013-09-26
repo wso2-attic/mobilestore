@@ -20,11 +20,6 @@ var render = function (theme, data, meta, require) {
 };
 
 */
-
-<<<<<<< HEAD
-
-var render = function (theme, data, meta, require) {
-=======
 var render = function (theme, data, meta, require) {	
 	
 	
@@ -44,9 +39,6 @@ var render = function (theme, data, meta, require) {
 		}
 		data.userAssets.mobileapp[i].subscribed_devices = subscribeDevicesWithDetails;		
 	}
-			
-				
->>>>>>> 4178e2d933086848e87dbfdc64794af691f3023c
     theme('2-column-right', {
         title: data.title,
         navigation: [
