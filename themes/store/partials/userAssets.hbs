@@ -4,6 +4,7 @@
 		{{#itr userAssets}}
 		<h3 class="asset-title-separator asset-type-{{key}}">{{cap key}}s</span><div class="pagination own-asset-slideshow-pag" id="own-asset-slideshow-pag-{{key}}"></div></h3>
 		<div class="top-asset-slideshow-cont">
+<<<<<<< HEAD
 		<div class="html_carousel">
 		<div id="asset-in-{{key}}">
 		
@@ -30,6 +31,58 @@
 						<a class="btn btn-mini asset-remove-btn" type="{{../../key}}" data-aid="{{../id}}" data-toggle="tooltip" title="{{t "Remove"}} {{../../key}}">
 							<i class="icon-remove"></i>
 						</a>
+=======
+			<div class="html_carousel">
+				<div id="asset-in-{{key}}">
+
+					{{#each value}}
+					{{#attributes}}
+					<!--div class="row-fluid"-->
+					<div class="store-my-item jtootip">
+
+						<!-- Modal Devices -->
+						<div id="devicesList-{{../id}}" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true" style="width:700px">
+
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">
+									x
+								</button>
+								<h4 id="myModalLabel">Select your device to uninstall</h4>
+							</div>
+							<div class="modal-body">								
+								{{#../subscribed_devices}}
+								<div data-dismiss="modal"  class="span1 text-center device-image-block-modal  asset-remove-btn" style="text-align: center; cursor: pointer"
+								data-device-id="{{id}}" type="{{../../../key}}" data-aid="{{../../id}}">
+									<img class="device-image-modal" style="height: 100px" data-device-id="{{id}}" 
+									src="/assets/wso2mobile/img/models/{{model}}.png">
+									<div class="text-center" style="font-size: x-small">
+										{{name}}
+									</div>
+								</div>
+								{{/../subscribed_devices}}
+
+							</div>
+						</div>
+						<!-- Modal Devices -->
+
+						<div class="tooltip_description row" style="display:none" title="{{firstName}} {{lastName}}'s Devices">
+							jtooltip
+						</div>
+
+						<div class="store-my-item-thumbnail">
+							<a href="{{url "/asset/"}}{{../../key}}/{{../id}}"><img src="{{images_thumbnail}}"></a>
+						</div>
+						<div class="store-my-item-info">
+							<a class="asset-title" href="{{url "/asset/"}}{{../../key}}/{{../id}}"> <strong>{{overview_name}}</strong> </a>
+							<small class="bookmark-assert-provider">by {{overview_provider}}</small>
+							<br>
+							<div class="btn-group">
+								<a href="#devicesList-{{../id}}" data-toggle="modal" class="btn btn-mini" type="{{../../key}}" data-aid="{{../id}}" data-toggle="tooltip" title="{{t "Remove"}} {{../../key}}"> <i class="icon-remove"></i> </a>
+							</div>
+						</div>
+
+>>>>>>> 4178e2d933086848e87dbfdc64794af691f3023c
 					</div>
 				</div>
 			
