@@ -1,4 +1,4 @@
-var ASSETS_EXT_PATH = '/assets/';
+var ASSETS_EXT_PATH = '/extensions/assets/';
 
 var ASSET_MANAGERS = 'asset.managers';
 
@@ -74,6 +74,8 @@ var init = function (options) {
         config[user.USER_OPTIONS] = configs(tenantId);
 
         config[TENANT_STORE] = new Store(tenantId);
+
+
     });
 
     event.on('login', function (tenantId, user, session) {
@@ -223,11 +225,10 @@ Store.prototype.subscriptionSpace = function(type) {
 
 Store.prototype.subscribe = function(type, id) {
     var path = this.subscriptionSpace(type) + '/' + id;
-	log.info("registrypath >>>>"+path);
     if(!this.registry.exists(path)) {
         this.registry.put(path, {
             name: id,
-            content: ' '
+            content: ''
         });
     }
 };
@@ -253,7 +254,7 @@ Store.prototype.subscriptions = function (type) {
         type = path.substr(path.lastIndexOf('/') + 1);
         //obj = obj();
         obj.forEach(function (path) {
-			var i = that.asset(type, path.substr(path.lastIndexOf('/') + 1));
+            items.push(that.asset(type, path.substr(path.lastIndexOf('/') + 1)))
 			if(type=="mobileapp"){
 				var description = registry.get(path).description;
 				if(description!=null){

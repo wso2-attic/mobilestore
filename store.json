@@ -1,5 +1,5 @@
 {
-    "assets": ["gadget", "site", "ebook","mobileapp"],
+    "assets": ["gadget", "site", "ebook", "mobileapps"],
     "assetsUrlPrefix": "/assets",
     "assetUrlPrefix": "/asset",
     "assetsPageSize": 12,

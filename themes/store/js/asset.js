@@ -111,7 +111,6 @@ $(function () {
         });
 
     $('#tab-review-box').find('.btn-primary').live('click', function (e) {
-    	
         if (!$("#form-review").valid()) return;
         caramel.post('/apis/comment', {
             asset: $('#assetp-tabs').data('aid'),
@@ -122,19 +121,12 @@ $(function () {
     });
 
     $('#btn-add-gadget').click(function () {
-    	var device = getURLParameter("device");	
-		appToInstall = $(this).data("app");	
-		if(!(device > 0)){
-			$('#devicesList').modal('show');
+	var elem = $(this);
+	if(store.user){
+	    isAssertTrue(elem.data('aid'),elem.data('type'));
 		}else{
-			performInstalltion(device, appToInstall);
-		}
-		//var elem = $(this);
-		//if(store.user){
-		//    isAssertTrue(elem.data('aid'),elem.data('type'));
-		//	}else{
-		//	   asset.process(elem.data('type'), elem.data('aid'), location.href);
-		//		}
+		   asset.process(elem.data('type'), elem.data('aid'), location.href);
+			}
     });
 
     $("a[data-toggle='tooltip']").tooltip();
