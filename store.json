@@ -1,5 +1,5 @@
 {
-    "assets": ["gadget", "site", "ebook", "mobileapps"],
+    "assets": ["gadget", "site", "ebook", "mobileapp"],
     "assetsUrlPrefix": "/assets",
     "assetUrlPrefix": "/asset",
     "subscriptionsUrlPrefix": "/subscriptions",
