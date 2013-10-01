@@ -2,8 +2,10 @@
     "assets": ["gadget", "site", "ebook", "mobileapps"],
     "assetsUrlPrefix": "/assets",
     "assetUrlPrefix": "/asset",
+    "subscriptionsUrlPrefix": "/subscriptions",
     "assetsPageSize": 12,
     "commentsPageSize": 10,
+    "socialCommentsEnable": true,
     "tenanted": true,
     "server": {
         "https": "%https.host%/admin",

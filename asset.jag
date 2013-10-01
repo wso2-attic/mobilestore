@@ -4,7 +4,7 @@ var caramel;
 
 (function () {
 
-    var asset, aid,
+    var asset, aid,title,
             log = new Log(),
             caramel = require('caramel'),
             store = require('/modules/store.js').store(request, session),
@@ -18,7 +18,7 @@ var caramel;
 
     matcher.match('/{context}' + config.assetsUrlPrefix + '/{type}/{aid}');
     aid = matcher.elements().aid;
-
+	title = store.assetLinks(type).title;
     try {
         asset = store.asset(type, aid);
     } catch (e) {
@@ -36,12 +36,20 @@ var caramel;
         title: 'Store | ' + type,
         user: user,
         sso: sso,
-        navigation: site.navigation(store.tenantId, {sso: sso, user: user}),
+       
+         header : site.header(tenantId, {
+                   sso: sso,
+                   user: user
+               }),
+       
+        navigation: site.navigation(tenantId),
         search: {
             search: {title: type},
             isTopAssets: false,
             searchFields: rxtAttributes
         },
+        isSocial:config.socialCommentsEnable,
+        
         type: type,
         embedURL: config.server.http + '/gadgets/ifr?url=' + asset.attributes.overview_url,
         inDashboard: inDashboard,
@@ -52,6 +60,7 @@ var caramel;
                 data: store.tags(type)
             }
         ],
+        myAssets : { user:user, type: type, title: title },
         recentAssets: store.recentAssets(type)
     });
 }());

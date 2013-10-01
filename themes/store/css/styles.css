@@ -368,12 +368,31 @@ h3.asset-title-separator {
 .store-left h3.asset-type-ebook {
     background: url("../img/icon-bar-site.png") no-repeat scroll 2px 1px rgb(235, 243, 243);
 }
+#container-header .nav.menu li:last-child{
+     border-right:1px solid transparent;
+}
+#container-header .nav.menu li.open{
+    background:#ffffff;
+    border-right:1px solid #ccc;
+}
+
+#container-header .open:after {
+    background: none repeat scroll 0 0 #FFFFFF;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    width: 100%;
+    z-index: 1001;
+}
 #container-search.affix {
-    left: 50%;
-    margin: 0 0 0 -585px;
+    left: 0;
+    margin: 0;
     padding: 0;
+    right: 0;
     top: 0;
-    z-index: 100;
+    width: auto;
+    z-index: 1002;
 }
 #container-search.affix > .row {
     box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2);
@@ -418,7 +437,12 @@ h3.asset-title-separator {
     opacity: 0.5;
 }
 .search-bar {
-    height: 66px;
+    height: 65px;
+     float: none;
+    margin: 0 auto;
+}
+.search-bar .dropdown-toggle:first-child{
+    margin-left:-13px;
 }
 .search-bar .dropdown {
     display: inline-block;
@@ -427,7 +451,9 @@ h3.asset-title-separator {
     padding: 8px 35px;
     color: #34495e;
     opacity: .7;
+    margin-right:-3px;
     font-size: 14px;
+    border-right: 1px solid #DADADA;
 }
 .search-bar .dropdown.selected, .search-bar .dropdown.selected:hover {
     background: #E84C3D;
@@ -459,7 +485,7 @@ h3.asset-title-separator {
     color: #A4B6C4;
 }
 .search-bar > .row-fluid {
-    margin-left: -30px;
+    /*margin-left: -30px;*/
 }
 
 .search-bar > .row-fluid > .span3 {

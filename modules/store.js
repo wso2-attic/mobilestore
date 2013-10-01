@@ -255,15 +255,6 @@ Store.prototype.subscriptions = function (type) {
         //obj = obj();
         obj.forEach(function (path) {
             items.push(that.asset(type, path.substr(path.lastIndexOf('/') + 1)))
-			if(type=="mobileapp"){
-				var description = registry.get(path).description;
-				if(description!=null){
-					try{
-						i.subscribed_devices = parse(registry.get(path).description).devices;
-					}catch(e){}
-				}
-			}
-			items.push(i);
         });
         assetz[type] = items;
     };
