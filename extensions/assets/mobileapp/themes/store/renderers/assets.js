@@ -1,4 +1,6 @@
 var render = function (theme, data, meta, require) {
+	
+		
     theme('2-column-right', {
         title: data.title,
         header: [
@@ -19,6 +21,13 @@ var render = function (theme, data, meta, require) {
                 partial: 'sort-assets',
                 context: require('/helpers/sort-assets.js').format(data.sorting, data.paging, data.navigation, data.type)
             },
+            
+            {
+                partial: 'devices',
+                context: {devices: data.devices, user: data.user}
+            },
+            
+            
             {
                 partial: 'assets',
                 context: require('/helpers/assets.js').currentPage(data.assets,data.sso,data.user, data.paging)

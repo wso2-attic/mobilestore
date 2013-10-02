@@ -151,6 +151,7 @@ var caramel;
             ];
         },
         assets: assets(),
+        devices: devices,
         paging: {
             url: url + 'sort=' + paging.sort + '&page=',
             start: paging.start || 0,

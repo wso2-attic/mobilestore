@@ -1,5 +1,6 @@
 <div>
 	<div id="assets-container" data-pages="{{pages}}">
+		
 
 		{{#if assets}}
 		{{#slice assets size="4"}}
@@ -8,7 +9,8 @@
 			{{#each .}}
 			<div class="span3 asset" data-id="{{id}}" data-type="{{type}}">
 				{{#attributes}}
-				<a href="{{url "/assets"}}/{{../type}}/{{../id}}">
+				
+				<a href="{{url "/asset"}}/{{../type}}/{{../id}}{{#if ../../../device}}?device={{../../../../device}}{{/if}}">
 				<div class="asset-icon">
 					{{#if ../indashboard}}
 						<i class="icon-bookmark store-bookmark-icon"></i>
@@ -17,21 +19,20 @@
 				</div> </a>
 
 				<div class="asset-details">
+					<div class="pull-right">						
+						<img src="{{url "/extensions/assets/mobileapp/themes/store/img/"}}{{overview_platform}}.png" style="width: 30px;"/>
+					
+					</div>
 					<div class="asset-name">
-						<a href="{{url "/assets"}}/{{../type}}/{{../id}}"> <h4>{{overview_name}}</h4> </a>
+						<a href="{{url "/asset"}}/{{../type}}/{{../id}}{{#if ../../../device}}?device={{../../../../device}}{{/if}}"> <h4>{{overview_name}}</h4> </a>
 					</div>
 					<div class="asset-rating">
 						<div class="asset-rating-{{../rating/average}}star">
 
 						</div>
-					</div>
+					</div>					
 					<div class="asset-author-category">
 						<ul>
-							<li>
-								<h4>{{t "Version"}}</h4>
-								<a class="asset-version" href="#">{{overview_version}}</a>
-
-							</li>
 							<li>
 								<h4>{{t "Category"}}</h4>
 								<a class="asset-category" href="#">{{cap ../type}}</a>
@@ -43,7 +44,7 @@
 							</li>
 
 						</ul>
-                        {{#mergeContext ssoParam=../../../sso userParam=../../../user thisAsset=../this}}
+                        {{#mergeContext ssoParam=../../../sso userParam=../../../user thisAsset=../this}}                        	
                             {{>assets-utilization}}
                         {{/mergeContext}}
 
