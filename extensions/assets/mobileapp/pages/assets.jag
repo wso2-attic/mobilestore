@@ -121,8 +121,14 @@ var caramel;
 	var mamModule = require('modules/mam.js').mam;
 	var mam = new mamModule();
 	var devices = [];
+	log.info(">>User"+stringify(user));
 	if(user !=undefined){
-		devices = parse(mam.getDevices(String(user.username),os));
+		var tenantDomain = carbon.server.tenantDomain({"tenantId": user.tenantId});
+		try{
+			devices = parse(mam.getDevices(String(user.username)+"@"+tenantDomain,os));
+		}catch(e){
+			
+		}
 	}
 
     //Check if there is a type before trying to read attributes

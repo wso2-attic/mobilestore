@@ -52,10 +52,10 @@ $(".device-image-block-modal").click(function(index) {
 
 function performInstalltion(device, app){
 	jQuery.ajax({
-			      url: "/store/apps/devices/" + device + "/install", 
-			      type: "POST",
-			      dataType: "json",	
-			      data : {"asset": app}			      
+      url: "/store/apps/devices/" + device + "/install", 
+      type: "POST",
+      dataType: "json",	
+      data : {"asset": app}			      
 	});
 	asset.process("mobileapp",app, location.href);
 }

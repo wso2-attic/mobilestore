@@ -151,7 +151,11 @@ var isAuthorized = function (user, permission, action) {
  */
 var userSpace = function (username) {
     try {
-        return require('/modules/server.js').options().userSpace.store + '/' + username;
+		var indexUsername = username;
+		if(indexUsername.indexOf('@') !== -1){
+			indexUsername = indexUsername.replace('@', ':');
+		}
+        return require('/modules/server.js').options().userSpace.store + '/' + indexUsername;
     } catch (e) {
         return null;
     }
