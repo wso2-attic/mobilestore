@@ -7,14 +7,13 @@
 
 var opened = false, currentPage = 1, totalPages;
 
+var appToInstall = null;
+
 $(function() {
 	var paging = store.asset.paging;
 	paging.current = 1;
 
 	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
-		//var parent = $(this).parent().parent().parent();
-		//asset.process(parent.data('type'), parent.data('id'), location.href);
-		//event.stopPropagation();
 		
 		var device = getURLParameter("device");	
 		appToInstall = $(this).data("app");	
@@ -27,12 +26,6 @@ $(function() {
 		
 	
 		event.stopPropagation();
-		
-		
-		
-		
-		
-		
 	});
 
 	$(document).on('click', '.asset > .asset-details', function(event) {
@@ -52,8 +45,8 @@ $(function() {
 	var loadAssets = function(url) {
 		caramel.data({
 			title : null,
-			header : ['header'],
-			body : ['assets', 'pagination', 'sort-assets', 'devices']
+			header : ['sort-assets'],
+			body : ['assets', 'pagination']
 		}, {
 			url : url,
 			success : function(data, status, xhr) {
@@ -78,8 +71,8 @@ $(function() {
 	var loadAssetsScroll = function(url) {
 		caramel.data({
 			title : null,
-			header : ['header'],
-			body : ['assets', 'pagination', 'sort-assets']
+			header : ['sort-assets'],
+			body : ['assets', 'pagination']
 		}, {
 			url : url,
 			success : function(data, status, xhr) {
@@ -141,5 +134,4 @@ $(function() {
 
 	caramel.loaded('js', 'assets');
 	caramel.loaded('js', 'sort-assets');
-	caramel.loaded('js', 'devices');
 });
