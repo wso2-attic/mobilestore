@@ -37,11 +37,16 @@ var render = function (theme, data, meta, require) {
                 context: require('/helpers/pagination.js').format(data.paging)
             } */
         ],
-        right: [        	
+        right: [ 
+        	{
+                partial: 'my-assets-link',
+                context: data.myAssets
+            },       	
             {
                 partial: 'recent-assets',
                 context: data.recentAssets
             },
+            
             {
                 partial: 'tags',
                 context: data.tags
