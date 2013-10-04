@@ -1,0 +1,10 @@
+<%
+
+caramel = require('caramel'),
+
+
+caramel.render({
+    'title': 'Store | My Apps',
+    'navigation': site.navigation()   
+});
+%>
