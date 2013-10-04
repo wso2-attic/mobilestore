@@ -106,26 +106,25 @@ router.get("apps/install/ios/{id}", function(ctx){
 
 // DEVICES APIS
 router.post('apps/devices/{deviceid}/install', function(ctx){
-	var user = require('/modules/user.js');
-    if (!user.current()) {
+	var user = require('/modules/user.js'), store = require("/modules/store.js").store(request, session);;
+    if (!user.current(session)) {
         response.sendError(401, 'Unauthorized');
         return;
     }
 	var mam = require('/modules/mam.js').mam;
 	var mamServer = new mam();
-	var asset =  store.assetID(type, ctx.asset);
+	var asset =  store.asset(type, ctx.asset);
 	var url = asset.attributes.overview_url; 
 	log.info(asset.attributes.overview_type);
 	if(asset.attributes.overview_platform.toUpperCase()=='WEBAPP'){
 		mamServer.installWebClip(url,getAsset(ctx.id).attributes.overview_name, ctx.deviceid);
 	}
-	url = configs.mam.ip+url;
+	url = configs.mam.server+url;
 	if(asset.attributes.overview_type.toUpperCase()=="MARKET"){
 		url=asset.attributes.overview_packageName;
 	}
 	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
 		url =  configs.mam.ip+"/store/apps/install/ios/"+asset.id;
-		log.info(url);
 		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
 	}else if(asset.attributes.overview_platform.toUpperCase()=='ANDROID'){
 		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
@@ -133,6 +132,7 @@ router.post('apps/devices/{deviceid}/install', function(ctx){
 });
 
 router.post('apps/devices/{deviceid}/uninstall', function(ctx){
+	var store = require("/modules/store.js").store(request, session);
 	var asset =  store.assetID(type, ctx.asset);
 	var install_asset = asset.attributes.overview_packageName; 
 	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
