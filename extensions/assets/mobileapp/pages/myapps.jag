@@ -1,7 +1,11 @@
 <%
 
 caramel = require('caramel');
-site = require('/modules/site.js'),
+site = require('/modules/site.js');
+configs = require('/store.js').config();
+
+
+sso = configs.ssoConfiguration.enabled;
 
 
 caramel.render({

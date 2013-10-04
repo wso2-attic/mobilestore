@@ -17,25 +17,7 @@ var render = function (theme, data, meta, require) {
         ],
        
         body: [
-        	{
-                partial: 'sort-assets',
-                context: require('/helpers/sort-assets.js').format(data.sorting, data.paging, data.navigation, data.type)
-            },
-            
-            {
-                partial: 'devices',
-                context: {devices: data.devices, user: data.user}
-            },
-            
-            
-            {
-                partial: 'assets',
-                context: require('/helpers/assets.js').currentPage(data.assets,data.sso,data.user, data.paging)
-            }/*,
-            {
-                partial: 'pagination',
-                context: require('/helpers/pagination.js').format(data.paging)
-            } */
+        	
         ],
         right: [ 
         	{

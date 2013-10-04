@@ -1,6 +1,6 @@
 
 {{#if thisAsset.indashboard}}
-    <a href="#" class="btn disabled btn-added">{{t "Bookmarked"}}</a>
+    <a href="#" class="btn disabled btn-added">{{t "Installed"}}</a>
 {{else}}
     {{# if ssoParam}}
         <a href="{{url "/login.jag"}}" class="btn btn-primary asset-add-btn" data-app="{{thisAsset.id}}">{{>process-asset-text}}</a>
