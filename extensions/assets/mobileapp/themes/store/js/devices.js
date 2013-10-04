@@ -57,7 +57,11 @@ function performInstalltion(device, app){
 			      dataType: "json",	
 			      data : {"asset": app}			      
 	});
-	asset.process("mobileapp",app, location.href);
+	
+	$( document ).ajaxComplete(function() {
+		asset.process("mobileapp",app, location.href);
+	});
+	
 }
 
 
