@@ -62,7 +62,7 @@
                                     <a href="#">
                                         <div class="asset-icon">
                                             {{#if ../indashboard}}
-                                                <i class="icon-bookmark store-bookmark-icon"></i>
+                                                <i class="icon-mobile-phone store-mobileapp-icon"></i>
                                             {{/if}}
                                             <a href="{{url "/assets"}}/{{../type}}/{{../id}}"><img
                                                     src="{{#if images_thumbnail}}{{images_thumbnail}}{{/if}}"></a>
@@ -93,7 +93,7 @@
                                             </ul>
                                             {{#dyn asset=../type}}
                                                 {{#mergeContext ssoParam=../../../../../sso userParam=../../../../../user thisAsset=../../this}}
-                                                    {{>top-asset-utilization}}
+                                                   
                                                 {{/mergeContext}}
                                             {{/dyn}}
                                         </div>
