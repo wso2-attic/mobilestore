@@ -40,6 +40,7 @@
                         var user = require('/modules/user.js');
 
                         if (user.loginWithSAML(sessionObj.loggedInUser)) {
+							log.info("User relay state = "+relayState);
                             log.info('user is set :::' + sessionObj.loggedInUser);
                             response.sendRedirect('/store');
                         }
