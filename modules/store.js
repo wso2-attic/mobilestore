@@ -405,7 +405,7 @@ Store.prototype.assets = function (type, paging) {
     var i;
 
     //var assetz = this.assetManager(type).list(paging);
-
+	log.info(type);
     var assetz = this.assetManager(type).search(options, paging);
 
 

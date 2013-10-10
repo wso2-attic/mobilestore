@@ -65,18 +65,13 @@ var caramel;
     } else {
         recent = true;
         gadgets = store.assets('mobileapp', paging);
-        sites = store.assets('site', paging);
-        ebooks = store.assets('ebook', paging);
     }
 	recentGadgets = store.recentAssets('mobileapp', 3);
-	recentSites = store.recentAssets('site', 3);
-	recentEBooks = store.recentAssets('ebook', 3);
 	recentAssets = recentGadgets;
 
 	if(!(query || fields)) {
 	popularGadgets = store.popularAssets('mobileapp');
-	popularSites = store.popularAssets('site');
-	popularEBooks = store.popularAssets('ebook');
+
 	popularAssets = popularGadgets;
 	}
     var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, "mobileapp");
