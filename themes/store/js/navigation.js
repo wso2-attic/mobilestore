@@ -86,7 +86,6 @@ $(function() {
 	$('.icon-gadget').addClass('icon-cog');
 	$('.icon-site').addClass('icon-globe');
     $('.icon-ebook').addClass('icon-file-text');
-    $('.icon-mobileapp').addClass('icon-mobile-phone');
 
 	$('#sso-login').click(function() {
 		$('#sso-login-form').submit();

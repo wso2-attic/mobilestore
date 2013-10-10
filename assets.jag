@@ -1,10 +1,10 @@
 <%
 var caramel;
 (function () {
-    var assets, paging, count, current, total, sso, url, mainPage, subPage,title
+    var assets, paging, count, current, total, sso, url, mainPage, subPage,title,
             options = {},
 			subscriptions ={},
-	    	subscription = false;
+	    	subscription = false,
             log = new Log(),
             user = require('/modules/user.js').current(session),
             configs = require('/store.js').config(),
@@ -18,13 +18,9 @@ var caramel;
 
     caramel = require('caramel');
 
-    log.info('SESSIONS ################ ::' + stringify(application.get('sso_sessions')));
-
     sso = configs.ssoConfiguration.enabled;
 
     url = '/assets/' + type + '/?' + (tag ? 'tag=' + tag + '&' : '') + (query ? 'query=' + query + '&' : '');
-
-    // log.info("LOGGED_IN_USER (store) " + session.get('LOGGED_IN_USER'));
 
     paging = store.assetsPaging(request);
 
@@ -34,11 +30,13 @@ var caramel;
     
     if(user){
 	subscriptions = store.subscriptions(type);
-	var count = Object.keys(subscriptions).length;
-	    if(count == 0){
-			subscriptions[type]={};
-		}else{
-			subscription =true;
+		if(subscriptions[type]){
+			var count = Object.keys(subscriptions[type]).length;
+		    if(count == 0){
+				subscriptions[type]={};
+			}else{
+				subscription =true;
+			}
 		}
 	}	
      
@@ -124,10 +122,10 @@ var caramel;
         log.info('After obtaining rxt attributes');
     }*/
    
-   log.info(selectedCategory);
+   //log.info(selectedCategory);
    
 
-    var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, type);
+    var rxtAttributes = require('/modules/util.js').getRXTAttributes(tenantId, type);
 
     caramel.render({
         title: 'Store | Assets',

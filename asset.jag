@@ -10,11 +10,11 @@ var caramel;
             config = require('/store.js').config(),
             site = require('/modules/site.js'),
             user = require('/modules/user.js').current(session),
-            utility = require('modules/util.js'),
+            utility = require('/modules/util.js'),
             sso = configs.ssoConfiguration.enabled,
             inDashboard = false,
             matcher = new URIMatcher(request.getRequestURI());
-	caramel = require('caramel');
+    caramel = require('caramel');
     matcher.match('/{context}' + config.assetsUrlPrefix + '/{type}/{aid}');
     aid = matcher.elements().aid;
 	title = store.assetLinks(type).title;

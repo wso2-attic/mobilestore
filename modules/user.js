@@ -6,7 +6,7 @@ var USER_OPTIONS = 'server.user.options';
 
 var USER_SPACE = 'server.user.space';
 
-var USER_ROLE_PREFIX = 'private_';
+var USER_ROLE_PREFIX = 'Internal/private_';
 
 /**
  * Initializes the user environment for the specified tenant. If it is already initialized, then will be skipped.
@@ -66,11 +66,9 @@ var init = function (options) {
         }
         if (!user.isAuthorized(space, carbon.registry.actions.PUT)) {
             um = server.userManager(tenantId);
-			log.info(">>>> "+space);
             perms = {};
             perms[space] = [carbon.registry.actions.GET, carbon.registry.actions.PUT, carbon.registry.actions.DELETE];
             um.authorizeRole(privateRole(user.username), perms);
-			log.info(">>>> P "+privateRole(user.username));
             if (log.isDebugEnabled()) {
                 log.debug('user role ' + privateRole(user.username) + ' was authorized to access user space ' + space);
             }
@@ -130,6 +128,7 @@ var permitted = function (username, session) {
     //log.info(usr.tenantId);
     um = server.userManager(usr.tenantId);
     user = um.getUser(usr.username);
+    user.tenantDomain = carbon.server.tenantDomain({tenantId: usr.tenantId});
     perms = opts.permissions.login;
     L1:
         for (perm in perms) {
@@ -175,11 +174,11 @@ var isAuthorized = function (user, permission, action) {
  * @return {*}
  */
 var userSpace = function (username) {
-  	var indexUsername = username;
-	if(indexUsername.indexOf('@') !== -1){
-		indexUsername = indexUsername.replace('@', ':');
-	}
-    return require('/modules/server.js').options().userSpace.store + '/' + indexUsername;
+    try {
+        return require('/modules/server.js').options().userSpace.store + '/' + username;
+    } catch (e) {
+        return null;
+    }
 };
 
 /**
@@ -220,11 +219,7 @@ var userExists = function (username) {
 };
 
 var privateRole = function (username) {
-	var indexUsername = username;
-	if(indexUsername.indexOf('@') !== -1){
-		indexUsername = indexUsername.replace('@', ':');
-	}
-    return USER_ROLE_PREFIX + indexUsername;
+    return USER_ROLE_PREFIX + username;
 };
 
 var register = function (username, password) {

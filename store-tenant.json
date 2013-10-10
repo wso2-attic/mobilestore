@@ -1,5 +1,5 @@
 {
-    "assets": ["gadget", "site", "ebook", "mobileapp"],
+    "assets": ["gadget", "site", "ebook"],
     "assetsPageSize": 12,
     "commentsPageSize": 10,
     "roles": {
@@ -12,5 +12,8 @@
         "login": {
             "/permission/admin/login": ["ui.execute"]
         }
+    },
+    "paths":{
+        "RXT_EXTENSION_PATH":"/config/ext/"
     }
 }

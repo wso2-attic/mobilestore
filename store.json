@@ -1,7 +1,7 @@
 {
-    "assets": ["gadget", "site", "ebook", "mobileapp"],
+    "assets": ["gadget", "site", "ebook"],
     "assetsUrlPrefix": "/assets",
-    "assetUrlPrefix": "/asset",
+    "extensionsUrlPrefix": "/extensions",
     "subscriptionsUrlPrefix": "/subscriptions",
     "assetsPageSize": 4,
     "commentsPageSize": 10,
@@ -12,7 +12,7 @@
         "http": "%http.host%"
     },
     "roles": {
-        "store": {
+        "internal/store": {
             "/permission/admin/login": ["ui.execute"]
         }
     },
@@ -20,7 +20,7 @@
         "username": "admin",
         "password": "admin"
     },
-    "userRoles": ["store"],
+    "userRoles": ["internal/store"],
     "permissions": {
         "login": {
             "/permission/admin/login": ["ui.execute"]
