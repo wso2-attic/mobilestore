@@ -6,7 +6,7 @@ var USER_OPTIONS = 'server.user.options';
 
 var USER_SPACE = 'server.user.space';
 
-var USER_ROLE_PREFIX = 'Internal/private_';
+var USER_ROLE_PREFIX = 'private_';
 
 /**
  * Initializes the user environment for the specified tenant. If it is already initialized, then will be skipped.
@@ -44,35 +44,12 @@ var init = function (options) {
     });
 
     event.on('login', function (tenantId, user, session) {
-        var space, um, perms,
-            log = new Log(),
-            server = require('/modules/server.js'),
-            carbon = require('carbon'),
-            registry = server.systemRegistry(tenantId);
         session.put(USER, user);
         session.put(USER_REGISTRY, new carbon.registry.Registry(server.server(), {
             username: user.username,
             tenantId: tenantId
         }));
-        space = userSpace(user.username);
-        session.put(USER_SPACE, space);
-        if (!registry.exists(space)) {
-            registry.put(space, {
-                collection: true
-            });
-            if (log.isDebugEnabled()) {
-                log.debug('user space was created for user : ' + user.username + ' at ' + space);
-            }
-        }
-        if (!user.isAuthorized(space, carbon.registry.actions.PUT)) {
-            um = server.userManager(tenantId);
-            perms = {};
-            perms[space] = [carbon.registry.actions.GET, carbon.registry.actions.PUT, carbon.registry.actions.DELETE];
-            um.authorizeRole(privateRole(user.username), perms);
-            if (log.isDebugEnabled()) {
-                log.debug('user role ' + privateRole(user.username) + ' was authorized to access user space ' + space);
-            }
-        }
+        session.put(USER_SPACE, userSpace(user.username));
     });
 
     event.on('logout', function (tenantId, user, session) {
@@ -128,7 +105,6 @@ var permitted = function (username, session) {
     //log.info(usr.tenantId);
     um = server.userManager(usr.tenantId);
     user = um.getUser(usr.username);
-    user.tenantDomain = carbon.server.tenantDomain({tenantId: usr.tenantId});
     perms = opts.permissions.login;
     L1:
         for (perm in perms) {
@@ -146,7 +122,7 @@ var permitted = function (username, session) {
     if (!authorized) {
         return false;
     }
-    event.emit('login', usr.tenantId, user, session);
+    event.emit('login', usr.tenantId, usr, session);
     //TODO: ??
     if (opts.login) {
         opts.login(user, password, session);
@@ -174,11 +150,15 @@ var isAuthorized = function (user, permission, action) {
  * @return {*}
  */
 var userSpace = function (username) {
-  	var indexUsername = username;
-	if(indexUsername.indexOf('@') !== -1){
-		indexUsername = indexUsername.replace('@', ':');
-	}
-    return require('/modules/server.js').options().userSpace.store + '/' + indexUsername;
+    try {
+		var indexUsername = username;
+		if(indexUsername.indexOf('@') !== -1){
+			indexUsername = indexUsername.replace('@', ':');
+		}
+        return require('/modules/server.js').options().userSpace.store + '/' + indexUsername;
+    } catch (e) {
+        return null;
+    }
 };
 
 /**
@@ -219,11 +199,7 @@ var userExists = function (username) {
 };
 
 var privateRole = function (username) {
-	var indexUsername = username;
-	if(indexUsername.indexOf('@') !== -1){
-		indexUsername = indexUsername.replace('@', ':');
-	}
-    return USER_ROLE_PREFIX + indexUsername;
+    return USER_ROLE_PREFIX + username;
 };
 
 var register = function (username, password) {
@@ -232,19 +208,8 @@ var register = function (username, password) {
         carbon = require('carbon'),
         event = require('/modules/event.js'),
         usr = carbon.server.tenantUser(username),
-        um = server.userManager(usr.tenantId);
-
-
-
-    if (!server.configs(usr.tenantId)) {
-        event.emit('tenantCreate', usr.tenantId);
-    }
-    if (!server.configs(usr.tenantId)[USER_OPTIONS]) {
-        event.emit('tenantLoad', usr.tenantId);
-    }
-
-    var opts = options(usr.tenantId);
-
+        um = server.userManager(usr.tenantId),
+        opts = options(usr.tenantId);
     um.addUser(usr.username, password, opts.userRoles);
     user = um.getUser(usr.username);
     role = privateRole(usr.username);
@@ -268,7 +233,7 @@ var register = function (username, password) {
         opts.register(user, password, session);
     }
     event.emit('userRegister', usr.tenantId, user);
-    //login(username, password);
+    login(username, password);
 };
 
 /**
