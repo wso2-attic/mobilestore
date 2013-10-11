@@ -85,6 +85,8 @@ router.get("apps/devices/{deviceid}/getApps", function(ctx){
 					var devicelist = store.registry.content(path);
 					if(devicelist==null){
 						devicelist = [];
+					}else{
+						devicelist = parse(devicelist.toString());
 					}
 					devicelist.push(ctx.deviceid);
 					log.info(path);

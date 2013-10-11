@@ -267,7 +267,7 @@ Store.prototype.subscriptions = function (type) {
 				var con = registry.content(path);
 				if(con!=null){
 					try{
-						i.subscribed_devices = con;
+						i.subscribed_devices = con.toString();
 					}catch(e){
 						log.info(e);
 					}
