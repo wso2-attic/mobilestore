@@ -1,3 +1,6 @@
+appToUninstall = null;
+
+
 $(function(){
 	
 
@@ -14,9 +17,66 @@ caramel.get('/apis/remove', {
 //console.log("removing : "+$(this).attr('data-aid')+" type :"+$(this).attr('type'));
 });
 
+
+
+
+
+
+
+
+
+
+
+
 $(document).on('click', '#myasset-container .asset-uninstall-btn', function() {
-	$('#devicesList').modal('show');
+	appToUninstall = $(this).data("aid");	
+	$('#devicesList').modal('show');	
 });
+
+
+
+$(".device-image").each(function(index) {	
+	var device = getURLParameter("device");	
+	if(device != "null"){
+		var deviceId = $(this).data("deviceId");
+		if(deviceId != device){
+			$(this).fadeTo("slow", 0.1);
+		}else{
+			$(this).parent().css("cursor", "default");
+			$(this).fadeTo("slow", 1);
+		}
+	}else{
+		$(this).css("opacity", 1);
+	}
+	
+	var srcImage = $(this).attr("src");	
+	if (!urlExists(srcImage)) {
+		$(this).attr("src", "/assets/wso2mobile/img/models/none.png");
+	}
+});
+
+$(".device-image-block-modal").click(function(index) {	
+	var deviceId = $(this).data("deviceId");
+	jQuery.ajax({
+      url: "/store/apps/devices/" + deviceId + "/uninstall", 
+      type: "POST",
+      dataType: "json",	
+      data : {"asset": appToUninstall}			      
+	});
+	
+	$( document ).ajaxComplete(function() {
+		asset.process("mobileapp",app, location.href);
+	});
+	
+	
+		
+});
+
+
+
+
+
+
 
 
 $('.embed-snippet').hide();
