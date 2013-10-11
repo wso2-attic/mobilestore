@@ -1,10 +1,9 @@
 var render = function(theme, data, meta, require) {
+	//print(caramel.build(data));	
 	
 	var images = data.asset.attributes.images_screenshots.split(",");
 	data.asset.attributes.images_screenshots = images;
 	
-	
-	//print(caramel.build(data));
 	theme('2-column-right', {
 		title : data.title,
 		

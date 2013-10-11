@@ -11,19 +11,17 @@
                     <a id="btn-add-gadget" class="btn btn-primary" href="#modal-add-gadget"
                        data-toggle="modal"
                        data-aid="{{../../../../id}}"
-                       data-app="{{../../../../id}}"
-                       data-type="{{../../../../type}}"> {{t "Install"}}</a>
+                       data-type="{{../../../../type}}"> {{t "Install "}}</a>
                 {{else}}
                     <a id="btn-add-gadget" class="btn btn-primary" href="{{url "/login.jag"}}"
                        data-toggle="modal"
                        data-aid="{{../../../../id}}"
-                       data-app="{{../../../../id}}"
-                       data-type="{{../../../../type}}"> {{t "Install"}}</a>
+                       data-type="{{../../../../type}}"> {{t "Install "}}</a>
                 {{/if}}
             {{else}}
                 <a id="btn-add-gadget" class="btn btn-primary" href="#modal-add-gadget"
                    data-toggle="modal"
-                   data-aid="{{../../id}}" data-app="{{../../../../id}}" data-type="{{../../type}}"> {{t "Install"}}</a>
+                   data-aid="{{../../../id}}" data-type="{{../../../type}}"> {{t "Install"}}</a>
             {{/if}}
 
         {{/if}}
