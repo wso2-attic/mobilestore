@@ -24,7 +24,7 @@ var render = function (theme, data, meta, require) {
 
 var render = function (theme, data, meta, require) {
 	
-	print(data);
+	//print(data);
 	
 	
     theme('2-column-right', {
@@ -59,7 +59,8 @@ var render = function (theme, data, meta, require) {
                 partial: 'userAssets',
                 context: {
         		'userAssets': data.userAssets,
-        		'URL': data.URL
+        		'URL': data.URL,
+        		'devices': data.devices
 				}
             }
         ],

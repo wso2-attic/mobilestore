@@ -69,7 +69,7 @@ var mam = (function () {
 			var url = configs.mdm.api+'/store/users/apps';
 			var data = email;
 			var result = jsonPost(url, {deviceId:deviceId});
-			log.info(result);
+			result = parse(unescape(stringify(result.data)));
 			return result;
 		},
 		authenticate: function(username, password){

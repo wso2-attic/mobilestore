@@ -41,6 +41,24 @@ var caramel;
 				}
 		}
 	}
+	
+	
+	var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, type);
+	var os = request.getParameter("os");
+	var mamModule = require('modules/mam.js').mam;
+	var mam = new mamModule();
+	var devices = [];
+	log.info(">>User"+stringify(user));
+	if(user !=undefined){
+		var tenantDomain = carbon.server.tenantDomain({"tenantId": user.tenantId});
+		try{
+			devices = parse(mam.getDevices(String(user.username)+"@"+tenantDomain,os));
+		}catch(e){
+			
+		}
+	}
+	
+	
 
 	caramel.render({
 		'title' : 'Store | My Items',
@@ -71,7 +89,8 @@ var caramel;
 		
 		'userAssets' : count > 0 ? subscriptions : null,
 		'recentAssets' : recentAssets,
-		'tags' : tags
+		'tags' : tags,
+		 devices: devices
 	});
 }());
 %>

@@ -14,6 +14,11 @@ caramel.get('/apis/remove', {
 //console.log("removing : "+$(this).attr('data-aid')+" type :"+$(this).attr('type'));
 });
 
+$(document).on('click', '#myasset-container .asset-uninstall-btn', function() {
+	$('#devicesList').modal('show');
+});
+
+
 $('.embed-snippet').hide();
 
 $(document).on('click', '#myasset-container .btn-embed', function() {

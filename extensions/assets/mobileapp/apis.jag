@@ -62,17 +62,17 @@ router.get("apps/devices/{deviceid}/getApps", function(ctx){
    	}
 	var mam = require('/modules/mam.js').mam;
 	var mamServer = new mam();
-	var apps = mamServer.getDeviceApps(ctx.deviceid)['received_data'];
-	log.info(apps);
+	var apps = parse(mamServer.getDeviceApps(ctx.deviceid)) ['received_data'];
 	var subscriptions = store.subscriptions(type);
+	log.info(type);
 	for(subscription in subscriptions){
 		log.info(subscription);
-		log.info(apps);
 		for(app in apps){
-			log.info(app);
+			log.info('>>>'+subscription);
 			if(app.package == subscription.overview_package){
 				var path = "/subscriptions/"+subscription.aid;
 				if(store.registry.exists(path)) {
+					
 					var devicelist = store.registry.content(path).devices;
 					if(devicelist){
 						devicelist = {};
