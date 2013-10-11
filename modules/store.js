@@ -264,11 +264,13 @@ Store.prototype.subscriptions = function (type) {
         obj.forEach(function (path) {
 			var i = that.asset(type, path.substr(path.lastIndexOf('/') + 1));
 			if(type=="mobileapp"){
-				var description = registry.get(semiPath).description;
-				if(description!=null){
+				var con = registry.content(path);
+				if(con!=null){
 					try{
-						i.subscribed_devices = parse(registry.get(semiPath).description).devices;
-					}catch(e){}
+						i.subscribed_devices = con;
+					}catch(e){
+						log.info(e);
+					}
 				}
 			}
 			items.push(i);

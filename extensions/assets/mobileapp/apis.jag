@@ -60,33 +60,43 @@ router.get("apps/devices/{deviceid}/getApps", function(ctx){
        response.sendError(401, 'Unauthorized');
        return;
    	}
+	var username = user.current(session).username;
+	var indexUsername = String(username);
+	if(indexUsername.indexOf('@') !== -1){
+		indexUsername = indexUsername.replace('@', ':');
+	}
 	var mam = require('/modules/mam.js').mam;
 	var mamServer = new mam();
 	var apps = parse(mamServer.getDeviceApps(ctx.deviceid)) ['received_data'];
 	var subscriptions = store.subscriptions(type);
-	log.info(type);
-	for(subscription in subscriptions){
-		log.info(subscription);
-		for(app in apps){
-			log.info('>>>'+subscription);
-			if(app.package == subscription.overview_package){
-				var path = "/subscriptions/"+subscription.aid;
+	subscriptions = subscriptions['mobileapp'];
+	for (var i = subscriptions.length - 1; i >= 0; i--){
+		var subscription = subscriptions[i]
+		log.info('>>sdfds');
+		log.info(user);
+		for (var j = apps.length - 1; j >= 0; j--){
+			var app = apps[j];
+			if(app.package == subscription.attributes.overview_packagename){
+				
+				var path = user.userSpace(username)+"/subscriptions/mobileapp/"+subscription.id;
+				log.info(store.registry.exists(path));
 				if(store.registry.exists(path)) {
 					
-					var devicelist = store.registry.content(path).devices;
-					if(devicelist){
-						devicelist = {};
+					var devicelist = store.registry.content(path);
+					if(devicelist==null){
+						devicelist = [];
 					}
 					devicelist.push(ctx.deviceid);
+					log.info(path);
+					log.info(devicelist);
 			        store.registry.put(path, {
-			            name: id,
-			            content: '',
-						devices: devicelist
+			            name: subscription.id,
+			            content: stringify(devicelist)
 			        });
 			    }
 			}
-		}
-	}
+		};
+	};
 
 });
 /*
