@@ -23,6 +23,10 @@ var render = function (theme, data, meta, require) {
 
 
 var render = function (theme, data, meta, require) {
+	
+	print(data);
+	
+	
     theme('2-column-right', {
         title: data.title,
          header: [

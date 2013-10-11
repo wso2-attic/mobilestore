@@ -67,6 +67,7 @@ router.get("apps/devices/{deviceid}/getApps", function(ctx){
 	var subscriptions = store.subscriptions(type);
 	for(subscription in subscriptions){
 		log.info(subscription);
+		log.info(apps);
 		for(app in apps){
 			log.info(app);
 			if(app.package == subscription.overview_package){
