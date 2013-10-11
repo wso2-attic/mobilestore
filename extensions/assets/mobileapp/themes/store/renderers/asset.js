@@ -27,6 +27,7 @@ var render = function(theme, data, meta, require) {
                 user : data.user,
                 sso : data.sso,
                 asset : data.asset,
+                devices: data.devices,
                 type : data.type,
                 inDashboard : data.inDashboard,
                 embedURL : data.embedURL,
