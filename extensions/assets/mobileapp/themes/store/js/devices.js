@@ -1,3 +1,6 @@
+
+
+
 $(".device-image").each(function(index) {	
 	var device = getURLParameter("device");	
 	if(device != "null"){
@@ -25,6 +28,11 @@ $(".device-image-modal").each(function(index) {
 	}
 });
 
+
+
+
+
+
 function urlExists(url){
     var http = new XMLHttpRequest();
     http.open('HEAD', url, false);
@@ -34,17 +42,23 @@ function urlExists(url){
 
 
 $(".device-image-block").click(function(index) {
+	
+		
 	var device = getURLParameter("device");
-	var deviceId = $(this).data("deviceId");	
+	var deviceId = $(this).data("deviceId");
+	var platform = $(this).data("platform");	
 	if(device != deviceId){
 		var uri = window.location.pathname + window.location.search;	
-		location.href = updateQueryStringParameter(uri, 'device', deviceId);
+		uri = updateQueryStringParameter(uri, 'device', deviceId);
+		uri = updateQueryStringParameter(uri, 'platform', platform);		
+		location.href = uri;
 	}
 	
 	
 });
 
-$(".device-image-block-modal").click(function(index) {	
+$(".device-image-block-modal").click(function(index) {
+	
 	var deviceId = $(this).data("deviceId");
 	performInstalltion(deviceId, appToInstall);	
 });
