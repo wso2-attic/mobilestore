@@ -24,5 +24,6 @@ var assetLinks = function (user) {
                 title: 'Mobile Apps',
                 url: ''
             }
-        ]};
+        ],
+		isCategorySupport: true};
 };
