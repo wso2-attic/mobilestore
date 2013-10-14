@@ -654,6 +654,9 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     height: 248px;
     overflow: hidden;
     position: relative;
+    /* #mobileappscss */
+   margin-bottom: 15px;
+   
 }
 .asset a:hover {
     text-decoration: none;
@@ -1084,7 +1087,8 @@ div.rating-cancel, div.star-rating {
     float: left;
 }
 #asset-slideshow-cont .html_carousel {
-    margin-left: -417px;
+   /*#mobileappscss margin-left: -417px;*/
+    margin-left: 0px;
 }
 
 .nav-tabs {

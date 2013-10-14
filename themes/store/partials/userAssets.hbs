@@ -1,7 +1,7 @@
 
 
 <div id="myasset-container" class="row">
-	<div class="span9">
+	<div class="span12">
 		{{#if userAssets}}
 		{{#itr userAssets}}
 		<h3 class="asset-title-separator asset-type-{{key}}">{{cap key}}s</span><div class="pagination own-asset-slideshow-pag" id="own-asset-slideshow-pag-{{key}}"></div></h3>
@@ -28,7 +28,7 @@
 							<i class="icon-remove"></i> Remove
 						</a>
 						
-						<a class="btn btn-mini asset-uninstall-btn" type="{{../../key}}" data-aid="{{../id}}" data-toggle="tooltip" title="{{t "Remove"}} {{../../key}}">
+						<a style="display: none" class="btn btn-mini asset-uninstall-btn" type="{{../../key}}" data-aid="{{../id}}" data-toggle="tooltip" title="{{t "Remove"}} {{../../key}}">
 							<i class="icon-remove"></i> Uninstall
 						</a>
 					</div>

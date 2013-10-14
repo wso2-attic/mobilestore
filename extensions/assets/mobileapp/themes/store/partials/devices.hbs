@@ -1,7 +1,10 @@
 {{#if user.username}}
-<div class="container" style="padding-bottom: 20px;">
+
+
+<div class="container" style="padding-bottom: 20px; display: none">
 	<h4>My Devices</h4>
 	<div class="span10">
+		
 			{{#../devices}}
 			<div data-dismiss="modal"  class="span1 text-center device-image-block" style="text-align: center; cursor: pointer"
 			data-device-id="{{id}}" data-platform="{{platform}}">

@@ -1,6 +1,20 @@
 var render = function (theme, data, meta, require) {
 	
 		
+	
+	/*if(data.selectedCategory != null){		
+		showDevices = new Array();
+		for(var i = 0; i < data.devices.length; i++){
+		   if(data.selectedCategory == data.devices[i].platform.toLowerCase()){
+		   	showDevices.push(data.devices[i]);
+		   }
+		}
+		data.devices = showDevices;	
+	}*/
+	
+	
+		
+		
     theme('2-column-right', {
         title: data.title,
         header: [
@@ -24,7 +38,7 @@ var render = function (theme, data, meta, require) {
             
             {
                 partial: 'devices',
-                context: {devices: data.devices, user: data.user}
+                context: {devices: data.devices, user: data.user, selectedCategory: data.selectedCategory}
             },
             
             
