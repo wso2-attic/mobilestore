@@ -73,6 +73,11 @@ function performInstalltion(device, app){
 	});
 	
 	$( document ).ajaxComplete(function() {
+		noty({
+		text : 'Application is provisioned to the device',
+		'layout' : 'center',
+		'modal': false
+		});
 		asset.process("mobileapp",app, location.href);
 	});
 	

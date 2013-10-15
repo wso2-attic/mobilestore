@@ -1037,7 +1037,7 @@ div.rating-cancel, div.star-rating {
     /*  box-shadow:0 2px 2px rgba(0,0,0,.3);*/
     left: -15px;
     position: absolute;
-    right: -21px;
+    right: -13px;
 }
 #slideshow-clearfix {
     margin-top: 320px;
@@ -1319,4 +1319,11 @@ ol.linenums li {
         margin-left: 9px !important;
     }
 
+}
+
+
+
+.btn-group > .btn:first-child {
+  margin-left: 15px; 
+  border-radius: 4px;
 }

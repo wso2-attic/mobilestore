@@ -8,12 +8,48 @@ $(function(){
 $('button[data-toggle=tooltip]').tooltip();
 
 $(document).on('click', '#myasset-container .asset-remove-btn', function() {
-caramel.get('/apis/remove', {
-	    aid: $(this).attr('data-aid'),
-	    type: $(this).attr('type')
-            }, function (data) {
-		location.reload();
-            });
+	
+	var aid = $(this).attr('data-aid');
+	var type = $(this).attr('type');
+	
+	
+noty({
+		text : 'Are you sure you want remove this app?',
+		buttons : [{
+			addClass : 'btn btn-cancel',
+			text : 'Cancel',
+			'layout' : 'center',
+			onClick : function($noty) {
+				$noty.close();
+
+			}
+			
+			
+		}, {
+			
+			addClass : 'btn btn-orange',
+			text : 'Ok',
+			onClick : function($noty) {
+				
+				caramel.get('/apis/remove', {
+			    aid: aid,
+			    type: type
+		            }, function (data) {
+				location.reload();
+		            });
+				
+				
+			}
+			
+		}]
+	});		
+	
+	
+	
+	
+	
+	
+
 //console.log("removing : "+$(this).attr('data-aid')+" type :"+$(this).attr('type'));
 });
 
