@@ -84,6 +84,26 @@ function performInstalltion(device, app){
 }
 
 
+$( document ).ready(function() {
+	var id = getURLParameter("id");
+	
+	devicePlatform = getURLParameter("platform");
+		
+		$(".device-image-block-modal").each(function(index) {	
+			var platform = $(this).data("platform").toLowerCase();
+			if(devicePlatform != platform){
+				$(this).css("visibility", "hidden");
+			}
+		
+	});	
+	
+	if(id != null){
+		
+		$('#devicesList').modal('show');
+	}
+});
+
+
 function updateQueryStringParameter(uri, key, value) {
   var re = new RegExp("([?|&])" + key + "=.*?(&|$)", "i");
   separator = uri.indexOf('?') !== -1 ? "&" : "?";
@@ -94,6 +114,7 @@ function updateQueryStringParameter(uri, key, value) {
     return uri + separator + key + "=" + value;
   }
 }
+
 
 function getURLParameter(name) {
     return decodeURI(
