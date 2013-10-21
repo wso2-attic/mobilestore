@@ -97,7 +97,7 @@ $( document ).ready(function() {
 		
 	});	
 	
-	if(id != null){
+	if(id != "null"){
 		
 		$('#devicesList').modal('show');
 	}
