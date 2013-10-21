@@ -457,7 +457,7 @@ h3.asset-title-separator {
     font-weight: bold;
 }
 .search-bar .dropdown.selected, .search-bar .dropdown.selected:hover {
-    background: #EEEEEE;
+    background: #229a55;
     color: #fff;
     opacity: 1;
 }
