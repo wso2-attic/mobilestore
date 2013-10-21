@@ -7,9 +7,10 @@
             requestURI,
             requestedPage = request.getParameter("requestedPage");
 	var payload = request.getParameter("id");
+	var platform = request.getParameter("platform");
 	var relayState = '/store/assets/mobileapp/';
 	if(payload!=undefined){
-		relayState= relayState+"?id="+payload;
+		relayState= relayState+"?id="+payload+"&platform="+platform;
 	}
    
     var  encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(dataConfi.ssoConfiguration.issuer),

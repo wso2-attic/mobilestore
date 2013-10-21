@@ -3,7 +3,7 @@
     <a href="#" class="btn disabled btn-added">{{t "Installed"}}</a>
 {{else}}
     {{# if ssoParam}}
-        <a href="{{url "/login.jag"}}?id={{thisAsset.id}}" class="btn btn-primary asset-add-btn" data-platform="{{thisAsset.attributes.overview_platform}}" data-app="{{thisAsset.id}}">{{>process-asset-text}}</a>
+        <a href="{{url "/login.jag"}}?id={{thisAsset.id}}&amp;platform={{thisAsset.attributes.overview_platform}}" class="btn btn-primary asset-add-btn" data-platform="{{thisAsset.attributes.overview_platform}}" data-app="{{thisAsset.id}}">{{>process-asset-text}}</a>
     {{else}}
         <a href="#" class="btn btn-primary asset-add-btn" data-platform="{{thisAsset.attributes.overview_platform}}" data-app="{{thisAsset.id}}">{{>process-asset-text}}</a>
     {{/if}}
