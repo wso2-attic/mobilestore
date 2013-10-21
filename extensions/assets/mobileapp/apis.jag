@@ -1,7 +1,5 @@
 <%
 var type = "mobileapp";
-// Find the place for server URL
-var serverURL = "https://192.168.1.1:9443/";
 var goose = require('/modules/goose.js').goose;
 var Handle = require("handlebars").Handlebars;
 var router = new goose({CONTEXT: "/store/"});
@@ -10,8 +8,8 @@ var log =new Log();
 log.info("inside");
 var store = require('/modules/store.js');
 var process = require("process");
-//	Refactor neccessary since the user routes don't belong here
-// Find away to send the user email to the MDM server
+
+
 router.get('apps/users/{userid}/devices', function(ctx){
 	var mam = require('/modules/mam.js').mam;
 	var mamServer = new mam();
@@ -23,12 +21,6 @@ router.get('apps/users/{userid}/devices', function(ctx){
 		response.sendError(404);
 	}
 });
-function spli(item){
-	if(item.attributes.images_screenshots){
-		item.attributes.images_screenshots =item.attributes.images_screenshots.split(',');
-	}
-	return item;
-}
 function getRegistry(){
 	server = new carbon.server.Server(),
    	registry = new carbon.registry.Registry(server, {
@@ -107,10 +99,10 @@ router.get("apps/devices/{deviceid}/getApps", function(ctx){
 */
 router.get("apps/install/ios/{id}", function(ctx){
 	var appName = ctx.id;
-	var asset =  store.assetID(type, appName);
+	var store = require("/modules/store.js").store(request, session);
+	var asset =  store.asset(type, appName);
 	//Assuming that the extension is of 3 letters
-	log.info(asset);
-	var iosManifest = compileTemplate("/assets/"+type+"/resources/ios_profile.hbs", {url:configs.mam.ip+asset.attributes.overview_url, bundleid: asset.attributes.overview_packageName, bundleversion: asset.attributes.overview_bundleVersion,  appname:asset.name});
+	var iosManifest = compileTemplate("/extensions/assets/"+type+"/resources/ios_profile.hbs", {url:configs.mam.ip+asset.attributes.overview_url, bundleid: asset.attributes.overview_packageName, bundleversion: asset.attributes.overview_bundleVersion,  appname:asset.name});
 	response.contentType = "application/xml";
 	print(iosManifest);
 });
@@ -137,7 +129,7 @@ router.post('apps/devices/{deviceid}/install', function(ctx){
 		url=asset.attributes.overview_packageName;
 	}
 	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
-		url =  configs.mam.ip+"/store/apps/install/ios/"+asset.id;
+		url =  configs.mam.ip+"store/apps/install/ios/"+asset.id;
 		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
 	}else if(asset.attributes.overview_platform.toUpperCase()=='ANDROID'){
 		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);

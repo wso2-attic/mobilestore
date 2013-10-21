@@ -7,7 +7,7 @@
             requestURI,
             requestedPage = request.getParameter("requestedPage");
 	var payload = request.getParameter("id");
-	var relayState = '/store';
+	var relayState = '/store/assets/mobileapp/';
 	if(payload!=undefined){
 		relayState= relayState+"?id="+payload;
 	}
