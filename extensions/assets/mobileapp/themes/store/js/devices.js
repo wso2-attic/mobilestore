@@ -94,7 +94,7 @@ $( document ).ready(function() {
 			//hasdevices = true;
 			var platform = $(this).data("platform").toLowerCase();			
 			if(id != "null" & devicePlatform != platform){
-				$(this).css("visibility", "hidden");
+				$(this).css("display", "none");
 			}
 		
 	});	
