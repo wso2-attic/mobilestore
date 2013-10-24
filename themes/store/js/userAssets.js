@@ -78,7 +78,7 @@ $(document).on('click', '#myasset-container .asset-reinstall-btn', function() {
 		$(".device-image-block-modal").each(function(index) {	
 			var platform = $(this).data("platform").toLowerCase();
 			if(devicePlatform != platform){
-				$(this).css("visibility", "hidden");
+				$(this).css("display", "none");
 			}
 		
 		});
