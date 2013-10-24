@@ -89,9 +89,11 @@ $( document ).ready(function() {
 	
 	devicePlatform = getURLParameter("platform");
 		
+		//var hasdevices = false;		
 		$(".device-image-block-modal").each(function(index) {	
-			var platform = $(this).data("platform").toLowerCase();
-			if(devicePlatform != platform){
+			//hasdevices = true;
+			var platform = $(this).data("platform").toLowerCase();			
+			if(id != "null" & devicePlatform != platform){
 				$(this).css("visibility", "hidden");
 			}
 		

@@ -1,7 +1,6 @@
 var render = function (theme, data, meta, require) {
 	
 		
-	
 	/*if(data.selectedCategory != null){		
 		showDevices = new Array();
 		for(var i = 0; i < data.devices.length; i++){
