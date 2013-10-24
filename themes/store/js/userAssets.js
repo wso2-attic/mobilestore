@@ -1,4 +1,5 @@
 appToUninstall = null;
+appToReinstall = null;
 
 
 $(function(){
@@ -70,7 +71,7 @@ $(document).on('click', '#myasset-container .asset-uninstall-btn', function() {
 });
 
 $(document).on('click', '#myasset-container .asset-reinstall-btn', function() {
-	appToInstall = $(this).data("app");
+	appToReinstall = $(this).data("aid");
 	   devicePlatform = $(this).data("platform").toLowerCase();
 	
 		
@@ -110,19 +111,14 @@ $(".device-image").each(function(index) {
 });
 
 $(".device-image-block-modal").click(function(index) {	
+	
 	var deviceId = $(this).data("deviceId");
 	jQuery.ajax({
       url: "/store/apps/devices/" + deviceId + "/reinstall", 
       type: "POST",
       dataType: "json",	
-      data : {"asset": appToUninstall}			      
-	});
-	
-	$( document ).ajaxComplete(function() {
-		asset.process("mobileapp",app, location.href);
-	});
-	
-	
+      data : {"asset": appToReinstall}			      
+	});	
 		
 });
 
