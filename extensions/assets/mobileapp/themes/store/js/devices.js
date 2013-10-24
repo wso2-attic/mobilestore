@@ -89,10 +89,13 @@ $( document ).ready(function() {
 	
 	devicePlatform = getURLParameter("platform");
 		
+		//var hasdevices = false;
+		
 		$(".device-image-block-modal").each(function(index) {	
+			//hasdevices = true;
 			var platform = $(this).data("platform").toLowerCase();
 			if(devicePlatform != platform){
-				$(this).css("visibility", "hidden");
+				//$(this).css("visibility", "hidden");
 			}
 		
 	});	
