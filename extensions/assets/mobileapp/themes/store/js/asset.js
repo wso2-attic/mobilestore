@@ -167,9 +167,24 @@ $(function () {
             asset.process(elem.data('type'), elem.data('aid'), location.href);
         }*/
        
-       appToInstall = $(this).data("app");	
+       var device = getURLParameter("device");	
+		appToInstall = $(this).data("app");
+	   devicePlatform = $(this).data("platform").toLowerCase();
+	
 		
+		$(".device-image-block-modal").each(function(index) {	
+			var platform = $(this).data("platform").toLowerCase();
+			if(devicePlatform != platform){
+				$(this).css("visibility", "hidden");
+			}
+		
+		});
+		
+		if(!(device > 0)){
 			$('#devicesList').modal('show');
+		}else{			
+			performInstalltion(device, appToInstall);
+		}
 		
        
        
