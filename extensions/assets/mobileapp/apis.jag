@@ -75,7 +75,7 @@ router.get("apps/install/ios/{id}", function(ctx){
 	var appName = ctx.id;
 	var asset =  store.asset(type, appName);
 	//Assuming that the extension is of 3 letters
-	var iosManifest = compileTemplate("/extensions/assets/"+type+"/resources/ios_profile.hbs", {url:configs.mam.ip+asset.attributes.overview_url, bundleid: asset.attributes.overview_packageName, bundleversion: asset.attributes.overview_bundleVersion,  appname:asset.name});
+	var iosManifest = compileTemplate("/extensions/assets/"+type+"/resources/ios_profile.hbs", {url:configs.mam.ip+asset.attributes.overview_url, bundleid: asset.attributes.overview_packagename, bundleversion: asset.attributes.overview_bundleversion,  appname:asset.name});
 	response.contentType = "application/xml";
 	print(iosManifest);
 });
