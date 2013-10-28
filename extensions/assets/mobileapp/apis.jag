@@ -96,7 +96,7 @@ router.post('apps/devices/{deviceid}/install', function(ctx){
 	}
 	url = configs.mam.ip+url;
 	if(asset.attributes.overview_type.toUpperCase()=="MARKET"){
-		url=asset.attributes.overview_packageName;
+		url=asset.attributes.overview_packagename;
 	}
 	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
 		url =  configs.mam.ip+"store/apps/install/ios/"+asset.id;
