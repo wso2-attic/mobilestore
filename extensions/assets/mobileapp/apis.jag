@@ -95,15 +95,13 @@ router.post('apps/devices/{deviceid}/install', function(ctx){
 		mamServer.installWebClip(url, asset.attributes.overview_name, ctx.deviceid);
 	}
 	url = configs.mam.ip+url;
+	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
+		url =  configs.mam.ip+"store/apps/install/ios/"+asset.id;
+	}
 	if(asset.attributes.overview_type.toUpperCase()=="MARKET"){
 		url=asset.attributes.overview_packagename;
 	}
-	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
-		url =  configs.mam.ip+"store/apps/install/ios/"+asset.id;
-		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
-	}else if(asset.attributes.overview_platform.toUpperCase()=='ANDROID'){
-		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
-	}
+	mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
 });
 
 router.post('apps/devices/{deviceid}/uninstall', function(ctx){
