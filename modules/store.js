@@ -1,4 +1,4 @@
-var ASSETS_EXT_PATH = '/assets/';
+var ASSETS_EXT_PATH = '/extensions/assets/';
 
 var ASSET_MANAGERS = 'asset.managers';
 
@@ -63,6 +63,12 @@ var init = function (options) {
             GovernanceConstants = org.wso2.carbon.governance.api.util.GovernanceConstants,
             reg = server.systemRegistry(tenantId),
             um = server.userManager(tenantId);
+        var securityProviderModule = require('/modules/security/storage.security.provider.js').securityModule();
+
+        var securityProvider = securityProviderModule.cached();
+
+        //The security provider requires the registry and user manager to work
+        securityProvider.provideContext(reg, um);
 
         //check whether tenantCreate has been called
         if (!reg.exists(STORE_CONFIG_PATH)) {
@@ -74,27 +80,30 @@ var init = function (options) {
         config[user.USER_OPTIONS] = configs(tenantId);
 
         config[TENANT_STORE] = new Store(tenantId);
+
+
     });
 
     event.on('login', function (tenantId, user, session) {
         /*var server = require('/modules/server.js'),
-            assetManagers = {};
-        store(tenantId, session).assetTypes().forEach(function (type) {
-            var path = ASSETS_EXT_PATH + type + '/asset.js',
-                azzet = new File(path).isExists() ? require(path) : require('/modules/asset.js');
-            assetManagers[type] = new azzet.Manager(server.anonRegistry(tenantId), type);
-        });
-        session[ASSET_MANAGERS] = assetManagers;*/
+         assetManagers = {};
+         store(tenantId, session).assetTypes().forEach(function (type) {
+         var path = ASSETS_EXT_PATH + type + '/asset.js',
+         azzet = new File(path).isExists() ? require(path) : require('/modules/asset.js');
+         assetManagers[type] = new azzet.Manager(server.anonRegistry(tenantId), type);
+         });
+         session[ASSET_MANAGERS] = assetManagers;*/
     });
 };
 
 //TODO:
 var currentAsset = function () {
-    var prefix = require('/store.js').config().assetsUrlPrefix, matcher = new URIMatcher(request.getRequestURI());
+    var prefix = require('/store.js').config().assetsUrlPrefix,
+        matcher = new URIMatcher(request.getRequestURI());
     if (matcher.match('/{context}' + prefix + '/{type}/{+any}') || matcher.match('/{context}' + prefix + '/{type}')) {
         return matcher.elements().type;
     }
-    prefix = require('/store.js').config().assetUrlPrefix;
+    prefix = require('/store.js').config().extensionsUrlPrefix + prefix;
     if (matcher.match('/{context}' + prefix + '/{type}/{+any}') || matcher.match('/{context}' + prefix + '/{type}')) {
         return matcher.elements().type;
     }
@@ -134,8 +143,9 @@ var store = function (o, session) {
 };
 
 var assetManager = function (type, reg) {
-    var path = ASSETS_EXT_PATH + type + '/asset.js',
-        azzet = new File(path).isExists() ? require(path) : require('/modules/asset.js');
+    var azzet,
+        path = ASSETS_EXT_PATH + type + '/asset.js';
+    azzet = (new File(path).isExists() && (azzet = require(path)).Manager) ? azzet : require('/modules/asset.js');
     return new azzet.Manager(reg, type);
 };
 
@@ -166,32 +176,28 @@ var Store = function (tenantId, session) {
         this.userSpace = user.userSpace(this.user.username);
     } else {
         configs(tenantId).assets.forEach(function (type) {
-            var path = ASSETS_EXT_PATH + type + '/asset.js',
-                azzet = new File(path).isExists() ? require(path) : require('/modules/asset.js');
-            assetManagers[type] = new azzet.Manager(server.anonRegistry(tenantId), type);
+            assetManagers[type] = assetManager(type, server.anonRegistry(tenantId));
         });
     }
 };
 
 Store.prototype.assetManager = function (type) {
-    var manager,
-        path = ASSETS_EXT_PATH + type + '/asset.js',
-        azzet = new File(path).isExists() ? require(path) : require('/modules/asset.js');
+    var manager;
     if (this.user) {
         manager = this.assetManagers[type];
         if (manager) {
             return manager;
         }
-        return (this.assetManagers[type] = new azzet.Manager(this.registry, type));
+        return (this.assetManagers[type] = assetManager(type, this.registry));
     }
     return this.assetManagers[type];
 };
 
-Store.prototype.assetsPageSize = function() {
+Store.prototype.assetsPageSize = function () {
     return configs()[ASSETS_PAGE_SIZE];
 };
 
-Store.prototype.commentsPageSize = function() {
+Store.prototype.commentsPageSize = function () {
     return configs()[COMMENTS_PAGE_SIZE];
 };
 
@@ -217,22 +223,21 @@ Store.prototype.commentsPaging = function (request) {
     };
 };
 
-Store.prototype.subscriptionSpace = function(type) {
+Store.prototype.subscriptionSpace = function (type) {
     return this.userSpace + SUBSCRIPTIONS_PATH + (type ? '/' + type : '');
 };
 
-Store.prototype.subscribe = function(type, id) {
+Store.prototype.subscribe = function (type, id) {
     var path = this.subscriptionSpace(type) + '/' + id;
-	log.info("registrypath >>>>"+path);
-    if(!this.registry.exists(path)) {
+    if (!this.registry.exists(path)) {
         this.registry.put(path, {
             name: id,
-            content: ' '
+            content: ''
         });
     }
 };
 
-Store.prototype.unsubscribe = function(type, id) {
+Store.prototype.unsubscribe = function (type, id) {
     var path = this.subscriptionSpace(type) + '/' + id;
     this.registry.remove(path);
 };
@@ -244,6 +249,10 @@ Store.prototype.subscriptions = function (type) {
         path = this.subscriptionSpace(type),
         assetz = {};
     fn = function (path) {
+		var semiPath = path;
+		if(path.indexOf('~') !== -1){
+			path = path.replace(':', '@');
+		}
         var type,
             items = [],
             obj = registry.content(path);
@@ -255,11 +264,13 @@ Store.prototype.subscriptions = function (type) {
         obj.forEach(function (path) {
 			var i = that.asset(type, path.substr(path.lastIndexOf('/') + 1));
 			if(type=="mobileapp"){
-				var description = registry.get(path).description;
-				if(description!=null){
+				var con = registry.content(path);
+				if(con!=null){
 					try{
-						i.subscribed_devices = parse(registry.get(path).description).devices;
-					}catch(e){}
+						i.subscribed_devices = con.toString();
+					}catch(e){
+						log.info(e);
+					}
 				}
 			}
 			items.push(i);
@@ -317,17 +328,28 @@ Store.prototype.tags = function (type) {
             }
         }
     }
+    //api setter
     for (tag in tz) {
         if (tz.hasOwnProperty(tag)) {
-            var result = this.assetManager(type).checkTagAssets({tag: tag });
-            if (result.length > 0) {
-                tagz.push({
-                    name: String(tag),
-                    count: tz[tag]
-                });
-            }
+            tagz.push({
+                name: String(tag),
+                count: tz[tag]
+            });
         }
     }
+    /* 
+     for (tag in tz) {
+     if (tz.hasOwnProperty(tag)) {
+     var result = this.assetManager(type).checkTagAssets({tag: tag });
+     if (result.length > 0) {
+     tagz.push({
+     name: String(tag),
+     count: tz[tag]
+     });
+     }
+     }
+     }
+     */
     return tagz;
 };
 
@@ -376,17 +398,17 @@ Store.prototype.assets = function (type, paging) {
 
     //Check if a type has been provided
     /*if(!type){
-        log.info('Returning an empty [] for Store.assets.');
-        return [];
-    }*/
+     log.info('Returning an empty [] for Store.assets.');
+     return [];
+     }*/
 
-    var options={};
-    options=obtainViewQuery(options);
+    var options = {};
+    options = obtainViewQuery(options);
     var i;
 
     //var assetz = this.assetManager(type).list(paging);
-
-    var assetz = this.assetManager(type).search(options,paging);
+	log.info(type);
+    var assetz = this.assetManager(type).search(options, paging);
 
 
     for (i = 0; i < assetz.length; i++) {
@@ -397,28 +419,28 @@ Store.prototype.assets = function (type, paging) {
 
 Store.prototype.tagged = function (type, tag, paging) {
 
-   // var type=(type=='null')?null:type;
+    // var type=(type=='null')?null:type;
 
     //Check if a type has been provided.
     /*if(!type){
-        log.info('Returning an empty [] for Store.tagged.');
-        return [];
-    } */
+     log.info('Returning an empty [] for Store.tagged.');
+     return [];
+     } */
 
     var i;
-    var options={};
+    var options = {};
     var assets;
     var length;
 
-    options['tag']=tag;
-    options=obtainViewQuery(options);
+    options['tag'] = tag;
+    options = obtainViewQuery(options);
 
     assets = this.assetManager(type).search(options, paging);
 
     length = assets.length;
 
     for (i = 0; i < length; i++) {
-        assets[i].rating = this.rating(assets[i].id);
+        assets[i].rating = this.rating(assets[i].path);
         assets[i].indashboard = this.isuserasset(assets[i].id, type);
     }
     return assets;
@@ -434,12 +456,12 @@ Store.prototype.asset = function (type, aid) {
 
     //Check if a type has been provided.
     /*if(!type){
-        log.info('Returning an empty [] for store.asset');
-        return [];
-    }*/
+     log.info('Returning an empty [] for store.asset');
+     return [];
+     }*/
 
     var asset = this.assetManager(type).get(aid);
-    asset.rating = this.rating(aid);
+    asset.rating = this.rating(asset.path);
     return asset;
 };
 
@@ -448,7 +470,13 @@ Store.prototype.asset = function (type, aid) {
  * @param type Asset type
  */
 Store.prototype.assetLinks = function (type) {
-    var mod = require(ASSETS_EXT_PATH + type + '/asset.js');
+    var mod,
+        path = ASSETS_EXT_PATH + type + '/asset.js',
+        file = new File(path);
+    if (!file.isExists()) {
+        return [];
+    }
+    mod = require(path);
     return mod.assetLinks(this.user);
 };
 
@@ -463,19 +491,19 @@ Store.prototype.popularAssets = function (type, count) {
 
     //Check if a type has been provided.
     /*if(!type){
-        log.info('Returning an empty [] for  store.popularAssets.');
-        return [];
-    }*/
+     log.info('Returning an empty [] for  store.popularAssets.');
+     return [];
+     }*/
 
-    var options={};
-    options=obtainViewQuery(options);
-    var paging={
+    var options = {};
+    options = obtainViewQuery(options);
+    var paging = {
         start: 0,
         count: count || 5,
         sort: 'popular'
     };
 
-    var assets=this.assetManager(type).search(options,paging);
+    var assets = this.assetManager(type).search(options, paging);
     return assets;
 };
 
@@ -485,30 +513,30 @@ Store.prototype.recentAssets = function (type, count) {
 
     //If a type is not given
     /*if(!type){
-        log.info('Returning an empty [] for Store.recentAssets.');
-        return [];
-    }*/
+     log.info('Returning an empty [] for Store.recentAssets.');
+     return [];
+     }*/
 
     var i, length;
-    var paging={
+    var paging = {
         start: 0,
         count: count || 5,
         sort: 'recent'
     };
-    var options={};
-    options=obtainViewQuery(options);
+    var options = {};
+    options = obtainViewQuery(options);
 
-    var recent=this.assetManager(type).search(options,paging);
+    var recent = this.assetManager(type).search(options, paging);
 
     //log.info('re')
-   /* var recent = this.assetManager(type).list({
-        start: 0,
-        count: count || 5,
-        sort: 'recent'
-    }); */
+    /* var recent = this.assetManager(type).list({
+     start: 0,
+     count: count || 5,
+     sort: 'recent'
+     }); */
     length = recent.length;
     for (i = 0; i < length; i++) {
-        recent[i].rating = this.rating(recent[i].id).average;
+        recent[i].rating = this.rating(recent[i].path).average;
         recent[i].indashboard = this.isuserasset(recent[i].id, type);
     }
     return recent;
@@ -522,13 +550,13 @@ Store.prototype.assetCount = function (type, options) {
     //Check if the asset type is provided
     //If there is no asset type then return 0
     /*if(!type){
-        log.info('Returning 0 for Store.assetCount.');
-        return 0;
-    }*/
+     log.info('Returning 0 for Store.assetCount.');
+     return 0;
+     }*/
 
     //Create the default query by lifecycle state
-    options=options||{};
-    options=obtainViewQuery(options);
+    options = options || {};
+    options = obtainViewQuery(options);
 
 
     return this.assetManager(type).count(options);
@@ -569,7 +597,7 @@ Store.prototype.search = function (options, paging) {
     //attributes['overview_status'] = /^(published)$/i;
 
     //We should only obtain assets in the Published life-cycle state.
-    options=obtainViewQuery(options);
+    options = obtainViewQuery(options);
 
     if (type) {
         var assetz = this.assetManager(type).search(options, paging);
@@ -619,24 +647,167 @@ Store.prototype.removeAsset = function (type, options) {
     this.assetManager(type).remove(options);
 };
 
-var LIFECYCLE_STATE_PROPERTY='lifecycleState';
+var LIFECYCLE_STATE_PROPERTY = 'lifecycleState';
 var DEFAULT_ASSET_VIEW_STATE = 'published'; //Unless specified otherwise, assets are always visible when Published
 
 /*
-The function creates a query object to be used in the Manager.search
-based on the visibleIn property of the store.json.
-@options: The object to be used as the query
-@return: A modified options with the state set to the search criteria
+ The function creates a query object to be used in the Manager.search
+ based on the visibleIn property of the store.json.
+ @options: The object to be used as the query
+ @return: A modified options with the state set to the search criteria
  */
-var obtainViewQuery=function(options){
+var obtainViewQuery = function (options) {
 
     var storeConfig = require('/store.json').lifeCycleBehaviour;
     var visibleStates = storeConfig.visibleIn || DEFAULT_ASSET_VIEW_STATE;
 
-    options[LIFECYCLE_STATE_PROPERTY]=visibleStates;
+    options[LIFECYCLE_STATE_PROPERTY] = visibleStates;
 
-    log.debug('options: '+stringify(options));
+    log.debug('options: ' + stringify(options));
 
 
     return options;
+}
+
+var TENANT_STORE_MANAGERS='store.managers'
+var SUPER_TENANT = -1234;
+var APP_MANAGERS = 'application.master.managers';
+var LOGGED_IN_USER = 'LOGGED_IN_USER';
+
+/*
+ The following function can be invoked to obtain the managers used by the store.The instance is cached
+ in the session.
+ @o: The current request
+ @session: The current session
+ @return: An instance of the StoreMasterManager object containing all of the managers used by the Store
+ */
+var storeManagers = function (o, session) {
+    var storeMasterManager;
+    var tenantId;
+    var server = require('/modules/server.js');
+
+    //We check if there is a valid session
+    if (session.get(LOGGED_IN_USER) != null) {
+        return handleLoggedInUser(o, session);
+    }
+    else {
+        //No session,anonymous access
+        return handleAnonUser();
+    }
+
+
+}
+/*
+The function handles the initialization and caching of managers when a user is logged in
+@o: The current request
+@session: The current session
+@return: An instance of a MasterManager object either anon or store
+ */
+function handleLoggedInUser(o, session) {
+    var storeMasterManager = session.get(TENANT_STORE_MANAGERS);
+
+    var tenantId = (o instanceof Request) ? server.tenant(o, session).tenantId : o;
+
+    if (storeMasterManager) {
+        return storeMasterManager;
+    }
+
+    storeMasterManager = new StoreMasterManager(tenantId, session);
+    session.put(TENANT_STORE_MANAGERS, storeMasterManager);
+
+    return storeMasterManager;
+}
+
+/*
+The function handles the initialization of managers when a user is not logged in (annoymous accesS)
+ */
+function handleAnonUser() {
+    var anonMasterManager = application.get(APP_MANAGERS);
+
+    //Check if it is cached
+    if (anonMasterManager) {
+
+        return anonMasterManager;
+
+    }
+    anonMasterManager = new AnonStoreMasterManager();
+    application.put(APP_MANAGERS, anonMasterManager);
+
+    return anonMasterManager;
+}
+
+/*
+ The class is used to encapsulate the managers used by the store
+ @tenantId: The tenantId of the current tenant
+ @session: The session of the currently logged in user
+ */
+function StoreMasterManager(tenantId, session) {
+    var user = require('/modules/user.js');
+    var registry = user.userRegistry(session);
+
+    var managers = buildManagers(registry);
+
+    this.modelManager = managers.modelManager;
+    this.rxtManager = managers.rxtManager;
+    this.tenantId = tenantId;
+}
+
+/*
+ The class is used to encapsulate managers when a user is not logged in
+ All managers user the system registry
+ */
+function AnonStoreMasterManager() {
+    var registry = server.systemRegistry(SUPER_TENANT);
+
+    var managers = buildManagers(registry);
+
+    this.modelManager = managers.modelManager;
+    this.rxtManager = managers.rxtManager;
+    this.tenantId = SUPER_TENANT;
+}
+
+/*
+ The function is used to create the managers
+ @tenantId: The tenantId of the current tenant
+ @registry: The registry of the current user who is logged in
+ @return: The managers used by the store
+ */
+var buildManagers = function (registry) {
+
+    var rxt_management = require('/modules/rxt/rxt.manager.js').rxt_management();
+    var ext_parser = require('/modules/rxt/ext/core/extension.parser.js').extension_parser();
+    var ext_core = require('/modules/rxt/ext/core/extension.core.js').extension_core();
+    var ext_mng = require('/modules/rxt/ext/core/extension.management.js').extension_management();
+    var config = require('/store-tenant.json');
+    var rxtManager = new rxt_management.RxtManager(registry);
+
+    //All of the rxt xml files are read and converted to a JSON object called
+    //a RxtTemplate(Refer rxt.domain.js)
+    rxtManager.loadAssets();
+
+    var parser = new ext_parser.Parser();
+
+    //Go through each rxt template
+    for (var index in rxtManager.rxtTemplates) {
+        var rxtTemplate = rxtManager.rxtTemplates[index];
+        parser.registerRxt(rxtTemplate);
+    }
+
+    parser.load(config.paths.RXT_EXTENSION_PATH);
+
+    var adapterManager = new ext_core.AdapterManager({parser: parser});
+    adapterManager.init();
+
+    var fpManager = new ext_core.FieldManager({parser: parser});
+    fpManager.init();
+
+    var ruleParser = new ext_parser.RuleParser({parser: parser});
+    ruleParser.init();
+
+    var modelManager = new ext_mng.ModelManager({parser: parser, adapterManager: adapterManager});
+
+    return{
+        modelManager: modelManager,
+        rxtManager: rxtManager
+    }
 }

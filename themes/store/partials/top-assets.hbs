@@ -26,7 +26,7 @@
 					</span>
 
                         <a data-type="gadget" class="btn btn-primary" id="btn-add-gadget"
-                           href="{{url "/asset"}}/{{type}}/{{id}}">View</a>
+                           href="{{url "/assets"}}/{{type}}/{{id}}">View</a>
 
                     </div>
 
@@ -47,7 +47,7 @@
 
 {{#itr recentAssets}}
     <div class="assets-container">
-        <h3 class="asset-title-separator asset-type-{{key}}"><span>{{#if ../recent}}Recent {{/if}}{{cap key}}s</span>
+        <h3 class="asset-title-separator asset-type-{{key}}"><span>{{#if ../recent}}Recent {{/if}}Mobile Apps</span>
 
             <div class="pagination top-asset-slideshow-pag" id="top-asset-slideshow-pag-{{key}}"></div>
         </h3>
@@ -62,16 +62,16 @@
                                     <a href="#">
                                         <div class="asset-icon">
                                             {{#if ../indashboard}}
-                                                <i class="icon-bookmark store-bookmark-icon"></i>
+                                                <i class="icon-mobile-phone store-mobileapp-icon"></i>
                                             {{/if}}
-                                            <a href="{{url "/asset"}}/{{../type}}/{{../id}}"><img
+                                            <a href="{{url "/assets"}}/{{../type}}/{{../id}}"><img
                                                     src="{{#if images_thumbnail}}{{images_thumbnail}}{{/if}}"></a>
                                         </div>
                                     </a>
 
                                     <div class="asset-details">
                                         <div class="asset-name">
-                                            <a href="{{url "/asset"}}/{{../type}}/{{../id}}"><h4>{{overview_name}}</h4>
+                                            <a href="{{url "/assets"}}/{{../type}}/{{../id}}"><h4>{{overview_name}}</h4>
                                             </a>
                                         </div>
                                         <div class="asset-rating">
@@ -93,7 +93,7 @@
                                             </ul>
                                             {{#dyn asset=../type}}
                                                 {{#mergeContext ssoParam=../../../../../sso userParam=../../../../../user thisAsset=../../this}}
-                                                    {{>top-asset-utilization}}
+                                                   
                                                 {{/mergeContext}}
                                             {{/dyn}}
                                         </div>

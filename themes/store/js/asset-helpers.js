@@ -3,47 +3,40 @@ var renderAssets, mouseStop, isAssertTrue, addAssert;
 (function () {
     renderAssets = function (data) {
         var el = $('.store-left');
-        caramel.css($('head'), data.header['sort-assets'].resources.css, 'sort-assets');
+        caramel.css($('head'), data.body['sort-assets'].resources.css, 'sort-assets');
         caramel.code($('head'), data.body['assets'].resources.code);
-        async.parallel({
-            assets: function (callback) {
-                caramel.render('assets', data.body.assets.context, callback);
-            },
-            paging: function (callback) {
-                caramel.render('pagination', data.body.pagination.context, callback);
-            },
-            sort: function (callback) {
-                caramel.render('sort-assets', data.header['sort-assets'].context, callback);
-            }
-        }, function (err, result) {
-            theme.loaded(el, result.sort);
-            el.append(result.assets);
-            el.append(result.paging);
+        caramel.partials(data._.partials, function () {
+            var assets = Handlebars.partials['assets'](data.body.assets.context),
+                paging = Handlebars.partials['pagination'](data.body.pagination.context),
+                sort = Handlebars.partials['sort-assets'](data.body['sort-assets'].context);
+            theme.loaded(el, sort);
+            el.append(assets);
+            el.append(paging);
             caramel.js($('body'), data.body['assets'].resources.js, 'assets', function () {
                 mouseStop();
             });
-            caramel.js($('body'), data.header['sort-assets'].resources.js, 'sort-assets', function () {
+            caramel.js($('body'), data.body['sort-assets'].resources.js, 'sort-assets', function () {
                 updateSortUI();
             });
             $(document).scrollTop(0);
         });
     };
-    
+
     renderAssetsScroll = function(data){
     	var temp = '{{#slice assets size="4"}}<div class="row-fluid">';
         	temp += '{{#each .}}';
 			temp += '<div class="span3 asset" data-path="{{path}}" data-type="{{type}}">';
 			temp += '	{{#attributes}}';
-			temp += '	<a href="{{url "/asset"}}/{{../type}}?asset={{../path}}">';
+			temp += '	<a href="{{url "/assets"}}/{{../type}}/{{../id}}">';
 			temp += '	<div class="asset-icon">';	
 			temp += '		{{#if ../indashboard}}';	
 			temp += '				<i class="icon-bookmark store-bookmark-icon"></i>';	
 			temp += '		{{/if}}';		
-			temp += '	<img src="{{#if images_icon}}{{images_icon}}{{/if}}">';
+			temp += '	<img src="{{#if images_thumbnail}}{{images_thumbnail}}{{/if}}">';
 			temp += '	</div> </a>';
 			temp += '	<div class="asset-details">';
 			temp += '		<div class="asset-name">';
-			temp += '			<a href="{{url "/asset"}}/{{../type}}?asset={{../path}}"> <h4>{{overview_name}}</h4> </a>';
+			temp += '			<a href="{{url "/assets"}}/{{../type}}/{{../id}}"> <h4>{{overview_name}}</h4> </a>';
 			temp += '		</div>';
 			temp += '		<div class="asset-rating">';
 			temp += '			<div class="asset-rating-{{../rating/average}}star">';
@@ -51,6 +44,10 @@ var renderAssets, mouseStop, isAssertTrue, addAssert;
 			temp += '		</div>';
 			temp += '		<div class="asset-author-category">';
 			temp += '			<ul>';
+			temp += '				<li>';
+			temp += '					<h4>{{t "Version"}}</h4>';
+			temp += '					<a class="asset-version" href="#">{{overview_version}}</a>';
+			temp += '				</li>';
 			temp += '				<li>';
 			temp += '					<h4>{{t "Category"}}</h4>';
 			temp += '					<a class="asset-category" href="#">{{cap ../type}}</a>';

@@ -1,12 +1,12 @@
 <%
 //TODO : remove this and fix welcome page properly
-//response.sendRedirect('.' + require('/store.js').config().assetsUrlPrefix + '/gadget');
+//response.sendRedirect('.' + require('/store.js').config().assetsUrlPrefix + '/mobileapp');
 
 var caramel;
 ( function() {
 	var gadgets, sites,ebooks, paging, count, current, total, loggedUser, popularAssets,
             recent = false,
-            type = 'gadget',
+            type = 'mobileapp',
             options = {},
             log = new Log(),
             user = require('/modules/user.js'),
@@ -36,17 +36,9 @@ var caramel;
     if (query) {
         gadgets = store.search({
             query: query,
-            type: 'gadget'
+            type: 'mobileapp'
         }, paging);
-        sites = store.search({
-            query: query,
-            type: 'site'
-        }, paging);
-
-        ebooks = store.search({
-            query: query,
-            type: 'ebook'
-        }, paging);
+        
 
     } else if (fields) {
         var parts, param, params, value;
@@ -60,43 +52,40 @@ var caramel;
                 options.attributes['overview_' + param.trim().toLocaleLowerCase()] = new RegExp(params[param], "i");
             }
         }
-        options.type = 'gadget';
+        options.type = 'mobileapp';
         gadgets = store.search(options, paging);
         options.type = 'site';
         sites = store.search(options, paging);
         options.type = 'ebook';
         ebooks = store.search(options, paging);
     } else if (tag) {
-        gadgets = store.tagged('gadget', tag, paging);
+        gadgets = store.tagged('mobileapp', tag, paging);
         sites = store.tagged('site', tag, paging);
         ebooks = store.tagged('ebook', tag, paging);
     } else {
         recent = true;
-        gadgets = store.assets('gadget', paging);
-        sites = store.assets('site', paging);
-        ebooks = store.assets('ebook', paging);
+        gadgets = store.assets('mobileapp', paging);
     }
-	recentGadgets = store.recentAssets('gadget', 3);
-	recentSites = store.recentAssets('site', 3);
-	recentEBooks = store.recentAssets('ebook', 3);
-	recentAssets = recentGadgets.concat(recentSites,recentEBooks);
+	recentGadgets = store.recentAssets('mobileapp', 3);
+	recentAssets = recentGadgets;
 
 	if(!(query || fields)) {
-	popularGadgets = store.popularAssets('gadget');
-	popularSites = store.popularAssets('site');
-	popularEBooks = store.popularAssets('ebook');
-	popularAssets = popularGadgets.concat(popularSites,popularEBooks);
+	popularGadgets = store.popularAssets('mobileapp');
+
+	popularAssets = popularGadgets;
 	}
-    var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, "gadget");
+    var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, "mobileapp");
 
     caramel.render({
 		title : 'Store | User Engagement Center',
 		user : loggedUser,
 		sso:sso,
-		navigation : site.navigation(tenantId, {
-			sso : sso,
-			user : loggedUser
-		}),
+		header : site.header(tenantId, {
+            sso: sso,
+            user: loggedUser
+        }),
+        navigation: site.navigation(tenantId),
+
         search : {
         	title : "Top Assets",
             isTopAssets : true,
@@ -104,9 +93,7 @@ var caramel;
         },
 		topAssets : {
 			recentAssets : {
-				gadget : gadgets,
-				site : sites,
-                ebook : ebooks
+				gadget : gadgets
 			},
 			popularAssets : popularAssets,
             recent : recent

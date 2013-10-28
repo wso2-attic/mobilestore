@@ -34,8 +34,8 @@ $(function() {
 	var loadAssets = function(url) {
 		caramel.data({
 			title : null,
-			header : ['sort-assets'],
-			body : ['assets', 'pagination']
+			header : ['header'],
+			body : ['assets', 'pagination', 'sort-assets']
 		}, {
 			url : url,
 			success : function(data, status, xhr) {
@@ -60,8 +60,8 @@ $(function() {
 	var loadAssetsScroll = function(url) {
 		caramel.data({
 			title : null,
-			header : ['sort-assets'],
-			body : ['assets', 'pagination']
+			header : ['header'],
+			body : ['assets', 'pagination', 'sort-assets']
 		}, {
 			url : url,
 			success : function(data, status, xhr) {
@@ -98,28 +98,40 @@ $(function() {
 
 	var infiniteScroll = function() {
 		totalPages = $('#assets-container').data('pages');
-		if (currentPage < totalPages) {
-			if ($(window).scrollTop() + $(window).height() >= $(document).height() * .8) {
-				var selType = $('.selected-type').data('sort'),
-					pathName = window.location.pathname,
-					search = window.location.search;
+
+		if(currentPage < totalPages) {
+			if($(window).scrollTop() + $(window).height() >= $(document).height() * .8) {
+				var selType = $('.selected-type').data('sort'), pathName = window.location.pathname, search = window.location.search;
 				search += (search != "") ? '&' : '?';
-					 
-				var	url = pathName + search + 'page=' + (++currentPage); 
-				
-				loadAssetsScroll(url); 
+
+				var url = pathName + search + 'page=' + (++currentPage);
+
+				loadAssetsScroll(url);
 				$(window).unbind('scroll', infiniteScroll);
 				setTimeout(function() {
 					$(window).bind('scroll', infiniteScroll);
 				}, 500);
 			}
-		}
+		} else {
 
+			$('.loading-inf-scroll').hide();
+		}
 	}
 
 	$(window).bind('scroll', infiniteScroll);
 
 	$("a[data-toggle='tooltip']").tooltip();
+	
+	$('#my-assets').hide();
+	$('.my-assets-link').click(function(){
+
+		if($(this).find('.pull-right').hasClass('icon-angle-down')){
+			$(this).find('.pull-right').removeClass('icon-angle-down').addClass('icon-angle-up');
+		}else{
+			$(this).find('.pull-right').removeClass('icon-angle-up').addClass('icon-angle-down');
+		}
+		$('#my-assets').slideToggle("fast");
+	});
 
 	caramel.loaded('js', 'assets');
 	caramel.loaded('js', 'sort-assets');

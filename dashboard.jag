@@ -1,9 +1,10 @@
 <%
 var caramel;
 ( function() {
-    var site, count, tag,
+    var site, tag,
             type = 'gadget',
             log = new Log(),
+            count = 0,
             store = require('/modules/store.js').store(request, session),
             types = store.assetTypes(),
             user = require('/modules/user.js').current(session),
@@ -23,41 +24,73 @@ var caramel;
 	recentEBooks = store.recentAssets("ebook", 3);
 	var recentAssets = recentGadgets.concat(recentSites,recentEBooks);
     var subscriptions = store.subscriptions();
-	count = Object.keys(subscriptions).length;
-	var mamModule = require('modules/mam.js').mam;
-	var os = request.getParameter("os");
-	var mam = new mamModule();
-	var devices = [];
-	if(user!=undefined){
-		devices = parse(mam.getDevices(String(user.username),os));
-	}
-	log.info(">>>devices "+stringify(devices));
-	
+	//count = Object.keys(subscriptions).length;
+
 	for(var i = 0; i < types.length; i++) {
 		tag = {
 			url : '/assets/' + types[i] + '?page=1&tag=',
 			data : store.tags(types[i])
 		};
 		tags[i] = tag;
+		var type = types[i];
+		if(subscriptions[type]){
+				if(subscriptions[type].length == 0){
+					delete subscriptions[type];
+				}else{
+					count += subscriptions[type].length;
+				}
+		}
 	}
+	
+	
+	var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, type);
+	var os = request.getParameter("os");
+	var mamModule = require('modules/mam.js').mam;
+	var mam = new mamModule();
+	var devices = [];
+	log.info(">>User"+stringify(user));
+	if(user !=undefined){
+		var tenantDomain = carbon.server.tenantDomain({"tenantId": user.tenantId});
+		try{
+			devices = parse(mam.getDevices(String(user.username)+"@"+tenantDomain,os));
+		}catch(e){
+			
+		}
+	}
+	
+	
 
 	caramel.render({
-		'title' : 'Store | My Apps',
+		'title' : 'Store | My Items',
+		  user: user,
+        sso: sso,
+         header : site.header(tenantId, {
+                   sso: sso,
+                   user: user
+               }),
+       
+        navigation: site.navigation(tenantId),
+        search: {
+            search: {title: type},
+            isTopAssets: false,
+            searchFields: rxtAttributes
+        },
+		/*
 		'navigation' : site.navigation(store.tenantId, {
-			sso : sso,
-			user : user
-		}),
-		 search: {
-			mainPage : "My apps",
-			subPage : "",
-			isTopAssets : false,
-            searchFields : rxtAttributes
-		},
+					sso : sso,
+					user : user
+				}),
+				 search: {
+					mainPage : "My bookmarks",
+					subPage : "",
+					isTopAssets : false,
+					searchFields : rxtAttributes
+				},*/
+		
 		'userAssets' : count > 0 ? subscriptions : null,
 		'recentAssets' : recentAssets,
 		'tags' : tags,
-		'devices': devices
-		
+		 devices: devices
 	});
 }());
 %>

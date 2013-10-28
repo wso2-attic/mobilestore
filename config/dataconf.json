@@ -1,7 +1,7 @@
 {
 	"mam":{
-		"server" : "http://localhost:9763/publisher/uploads/",
-		"ip" : "http://localhost:9763"
+		"server" : "http://192.168.1.157:9763/publisher",
+		"ip" : "http://192.168.1.157:9763"
 	},
 	"mdm": {
 		"api" : "http://localhost:9763/mdm/api"
