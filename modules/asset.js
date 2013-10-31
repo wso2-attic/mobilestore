@@ -95,47 +95,64 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
     }
 
 
-    var search = function (that, options,paging ) {
-    var assets;
+  
+	var search = function(that, options, paging) {
+		var assets;
+        var configs = require('/config/store.js').config();
 
-        if (options.tag) {
-            var registry = that.registry,
-                tag = options.tag;
-            assets=that.manager.find(function (artifact) {
-                if (registry.tags(artifact.path).indexOf(tag) != -1) {
-                    //return matchAttr(options.attributes, artifact.attributes); -To accommodate filtering by lifecycle state
-                    return matchArtifact(options, artifact);
-                }
-                return false;
-            },paging);
+		if(options.tag) {
+			var registry = that.registry, tag = options.tag;
+			assets = that.manager.find(function(artifact) {
+				if(registry.tags(artifact.path).indexOf(tag) != -1) {
+					//return matchAttr(options.attributes, artifact.attributes); -To accommodate filtering by lifecycle state
+					return matchArtifact(options, artifact);
+				}
+				return false;
+			}, paging);
+			dataInjector.cached().inject(assets, DataInjectorModes.DISPLAY);
 
-            dataInjector.cached().inject(assets,DataInjectorModes.DISPLAY);
+			return assets;
+		}
+		if(options.query) {
+			var query = options.query;
+			assets = that.manager.search(query, paging);
 
-            return assets;
-        }
-        if (options.query) {
-            var query = options.query;
-            assets= that.manager.search(query,paging);
+			dataInjector.cached().inject(assets, DataInjectorModes.DISPLAY);
 
-            dataInjector.cached().inject(assets,DataInjectorModes.DISPLAY);
+			return assets;
 
-            return assets;
-        
-        }
-        if (options) {
+		} else if(options.attributes) {
 
-            assets= that.manager.find(function (artifact) {
-                // return matchAttr(options.attributes, artifact.attributes);
-                return matchArtifact(options, artifact);
+			//TODO need proper way to distinguish search and parameter search
+			if(options.attributes.length != null){
+				options.attributes = {"overview_name":options.attributes,"lcState":configs.lifeCycleBehaviour.visibleIn};
+			}else{
+				options.attributes["lcState"] = configs.lifeCycleBehaviour.visibleIn;
+			}
+            var searchArtifact = options.attributes;
+			assets = that.manager.search(searchArtifact, paging);
 
-            },paging);
+			dataInjector.cached().inject(assets, DataInjectorModes.DISPLAY);
 
-            dataInjector.cached().inject(assets,DataInjectorModes.DISPLAY);
+			return assets;
+				
+		} else if(options.lcState) {
+			assets = that.manager.search(options, paging);
+			dataInjector.cached().inject(assets, DataInjectorModes.DISPLAY);
+			
+			return assets;
+			
+		} else if(options) {
+			assets = that.manager.search(null, paging);
+			dataInjector.cached().inject(assets, DataInjectorModes.DISPLAY);
 
-            return assets;
-        }
-        return [];
-    };
+			return assets;
+		}
+
+		return [];
+	};
+
+
 
     var loadRatings = function (manager, items) {
         var i, asset,
@@ -234,27 +251,6 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
         return items.slice(paging.start, (paging.start + paging.count));
     };
 
-    /*Manager.prototype.search = function (filters, paging) {
-     var all = this.manager.find(function (artifact) {
-     var expected, field, actual;
-     for (field in filters) {
-     if (filters.hasOwnProperty(field)) {
-     expected = filters[field];
-     actual = artifact.attribute(field);
-     if (expected instanceof RegExp) {
-     if (!expected.test(actual)) {
-     return false;
-     }
-     } else {
-     return expected == actual;
-     }
-     }
-     }
-     return true;
-     });
-     return this.sorter.paginate(all, paging);
-     };*/
-
     Manager.prototype.search = function (options, paging) {
         return loadRatings(this, search(this, options,paging), paging);
     };
@@ -309,12 +305,12 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
      * METHOD IS DEPRECATED
      */
     Manager.prototype.list = function (paging) {
-        log.info('Calling deprecated method list - A method from down under-give him a vegimite sandwich');
+        log.debug('Calling deprecated method list - A method from down under-give him a vegimite sandwich');
         //Obtain the visible states from the
         /*var storeConfig = require('/store.json').lifeCycleBehaviour;
         var visibleStates = storeConfig.visibleIn || DEFAULT_ASSET_VIEW_STATE;
 
-        log.info('Searching for assets in the ' + visibleStates + ' states.');
+        log.debug('Searching for assets in the ' + visibleStates + ' states.');
 
         var all = this.search({
             lifecycleState: visibleStates
@@ -324,36 +320,6 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
 
         return loadRatings(this, this.sorter.paginate(all, paging));*/
         return null;
-    };
-
-    /*
-    The method will now count the number of assets matching the query
-    encapsulated in the options object.
-    @options: An object with properties that must be matched
-    @return:An integer count of the number of matches,else false.
-     */
-    Manager.prototype.count = function (options) {
-        if (options) {
-            return search(this, options).length;
-        }
-
-        var matchingCount = 0;
-
-
-        this.manager.find(function (asset) {
-
-            //If the passed in asset matches the current asset we
-            //increase published count.
-            if(matchArtifact(options,asset)){
-                matchingCount++;
-            }
-
-        },null);
-
-        log.debug('Number of assets counted : ' + matchingCount);
-
-        //return this.manager.count();
-        return matchingCount;
     };
 
     /*

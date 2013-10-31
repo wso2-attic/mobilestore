@@ -151,7 +151,7 @@ var rxt_utility = function () {
 
             //Check if the object is empty
             if(countProps(obj)==0){
-                //log.info('empty object');
+                //log.debug('empty object');
                 return true;
             }
             else{
@@ -301,6 +301,23 @@ var rxt_utility = function () {
             for(var key in objectB){
 
                 objectA[key]=objectB[key];
+            }
+        },
+
+        /*
+         The function extends the functions of the parent with methods of the child
+         @parent: The object to be extended
+         @child: The object with which the child is extended
+         */
+        extend: function (parent, child) {
+
+            //Go through method of the child
+            for (var key in child) {
+
+                //Check if the parent has the key
+                if (parent.hasOwnProperty(key)) {
+                    parent[key] = child[key];
+                }
             }
         },
 

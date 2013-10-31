@@ -1,5 +1,16 @@
 /*
- Description:The class is used to provided an API to store files in a source indepedent way
+ Description:The class is used to provided an API to store files in a source independent way
+             It supports the following operations:
+             1. get(key)
+             2. put({file,contentType})
+             The StorageManager works by using a UUID as the key for the stored file.
+
+             This implementation needs to be changed such that the StorageManager can use multiple
+             providers (e.g. db or filesystem)
+
+Filename: storage.js
+Created Date: 15/10/2013
+
  */
 var storageModule = function () {
 
@@ -19,7 +30,11 @@ var storageModule = function () {
         this.context = null;
         this.isCached = false;
 
+
+
         this.init(options);
+
+
 
         //If caching is enabled obtain
         if (this.isCached) {
@@ -39,7 +54,7 @@ var storageModule = function () {
         this.prepare();
 
         //Attach a new driver
-        var driver = this.driverManager.get('default');
+        var driver = this.driverManager.get(this.connectionInfo.dataSource);
         this.modelManager.driver = driver;
 
     };
@@ -53,7 +68,7 @@ var storageModule = function () {
         this.driverManager = new driverManagement.DriverManager();
 
         //Get a default driver
-        var driver = this.driverManager.get('default');
+        var driver = this.driverManager.get(this.connectionInfo.dataSource);
 
         //Create an instance of the model manager
         this.modelManager = new modelManagement.ModelManager({driver: driver, connectionInfo: this.connectionInfo});
@@ -63,11 +78,11 @@ var storageModule = function () {
         var cachedManager = application.get(CACHE_SM);
 
         if (cachedManager) {
-            //log.info('cached');
+            //log.debug('cached');
             return cachedManager;
         }
         else {
-            //log.info('not cached');
+            //log.debug('not cached');
             return null;
         }
     }
@@ -105,7 +120,7 @@ var storageModule = function () {
             file=value.file;
         }
 
-        log.info('filename :'+file.getName());
+        //log.debug('filename :'+file.getName());
 
         //Generate a uuid for the resource
         resource.uuid = uuid.generate();
@@ -139,19 +154,19 @@ var storageModule = function () {
         var id;
         //The key did not have a file component
         if(splitList.length<2){
-            //log.info('just uuid');
+            //log.debug('just uuid');
             id=key;
         }
         else{
-            //log.info('uuid/file');
+            //log.debug('uuid/file');
             id=splitList[0];
         }
 
-        //log.info('uuid is '+id);
+        //log.debug('uuid is '+id);
 
         var results = resource.find({uuid:id}) || [];
 
-        //log.info(results[0].fileName);
+        //log.debug(results[0].fileName);
         return results[0] || null;
     };
 

@@ -55,12 +55,21 @@ var adjustStoreRight = function(){
 		$('.store-right > .row > .span12').removeClass('span12').addClass('span3');
 		$('.asset-description-header > .row > .span12').removeClass('span12').addClass('span9');
 		
+	
+		
 		setTimeout(function(){ 
-		($('.store-right').height() < $('.store-left').height()) &&  $('.store-right').height($('.store-left').height() + 15);
-		}, 200);
+					($('.store-right').height() < $('.store-left').height()) &&  $('.store-right').height($('.store-left').height() + 15);
+					}, 200);
+		
+	
 	}
-	
-	
+	$('.store-left').resize(function(){
+		var right = $('.store-right');
+		var left = $(this);
+		if(right.height > left.height) {
+			right.height(left.height());
+		} 
+	});
 	
 }
 $(function(){

@@ -21,8 +21,12 @@ var securityModule = function () {
     var ROLE_ADMIN='admin';
     var ROLE_ANON='anon';
 
+    var CONFIG_PATH='/config/ext';
 
-    function SecurityProvider(context) {
+
+    function SecurityProvider() {
+        var context={};
+        context['path']=CONFIG_PATH;
         this.storageBlocks = {};
         this.context = context;
 
@@ -68,7 +72,7 @@ var securityModule = function () {
     /*
     The function hand
      */
-    SecurityProvider.prototype.execute=function(assetType,assetId,uuid){
+    SecurityProvider.prototype.execute=function(assetType,assetId,uuid,session){
 
         //Load the governance artifacts
         GovernanceUtils.loadGovernanceArtifacts(this.registry.registry);
@@ -80,19 +84,19 @@ var securityModule = function () {
         var asset=artifactManager.get(assetId);
 
         //Obtain the signed in user
-        var user=session.get(LOGGED_IN_USER);
+        var userInstance=require('store').server.current(session);
 
         var roles=[];
-
+        var username = null;
         //If a user is not logged in they will recieve anon rights
-        if(!user){
+        if(!userInstance){
             log.debug('a user is not logged in.');
             roles.push(ROLE_ANON);
         }
         else{
             //Obtain the roles
-            var userInstance=this.um.getUser(user);
             roles=userInstance.getRoles();
+            username = userInstance.username;
         }
 
         //Obtain the field name
@@ -102,8 +106,7 @@ var securityModule = function () {
             log.debug('field for '+uuid+' could not be found.');
             return false;
         }
-
-        var isAllowed=this.isAllowed(asset,user,roles,asset.lifecycleState,field);
+        var isAllowed=this.isAllowed(asset,username,roles,asset.lifecycleState,field);
 
         return isAllowed;
     };
