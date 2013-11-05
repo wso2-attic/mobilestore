@@ -11,15 +11,9 @@ var currentPage = function (assetsx,ssox,userx, paging) {
     var outx  = {
         'assets': assetsx,
         'sso': ssox,
-        'user': userx
+        'user': userx,
+        'pages': Math.ceil(paging.total/paging.size)
     };
     return outx;
-};
-
-var format = function (fields) {
-    fields.searchFields.forEach(function (field) {
-        field.field_name = field.field_name.toLocaleLowerCase();
-    });
-    return fields;
 };
 

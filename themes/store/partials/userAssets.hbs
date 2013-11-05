@@ -1,8 +1,10 @@
+
+
 <div id="myasset-container" class="row">
-	<div class="span9">
+	<div class="span12">
 		{{#if userAssets}}
 		{{#itr userAssets}}
-		<h3 class="asset-title-separator asset-type-{{key}}">{{cap key}}s</span><div class="pagination own-asset-slideshow-pag" id="own-asset-slideshow-pag-{{key}}"></div><a class="link-view-all" href="{{url "/subscriptions/"}}{{key}}"><small>View all</small></a></h3>
+		<h3 class="asset-title-separator asset-type-{{key}}">{{cap key}}s</span><div class="pagination own-asset-slideshow-pag" id="own-asset-slideshow-pag-{{key}}"></div></h3>
 		<div class="top-asset-slideshow-cont">
 		<div class="html_carousel">
 		<div id="asset-in-{{key}}">
@@ -13,35 +15,23 @@
 			<div class="store-my-item">
 			
 				<div class="store-my-item-thumbnail">
-					{{#if ../isPublished}}
-						<a href="{{url "/assets/"}}{{../../../key}}/{{../../id}}"><img src="{{images_thumbnail}}"></a>
-					{{else}}
-						<img src="{{images_thumbnail}}">
-					{{/if}}
-					
+					<a href="{{url "/assets/"}}{{../../key}}/{{../id}}"><img src="{{images_thumbnail}}"></a>
 				</div>
 				<div class="store-my-item-info">
 					<a class="asset-title" href="{{url "/assets/"}}{{../../key}}/{{../id}}">
 						<strong>{{overview_name}}</strong>
 					</a>
-					{{#if ../isPublished}}
-						<small class="bookmark-assert-provider">by {{overview_provider}}</small>
-						<div class="btn-group">
-							<a class="btn btn-mini" data-toggle="tooltip" title="{{t "View"}} {{../../type}}" href="{{url "/assets/"}}{{../../type}}/{{../../id}}">
-							<i class="icon-eye-open"></i>
-							</a>
-							<a class="btn btn-popover btn-mini {{../../type}}" data-content='&lt;iframe src="{{../../../../URL}}/gadgets/ifr?url={{overview_url}}"&gt;&lt;/iframe&gt;' data-toggle="popover" data-placement="top" title="{{t "Embed this"}} {{../../type}}">
-								<i class="icon-angle-left"></i> <i class="icon-angle-right"></i>
-							</a>
-							<a class="btn btn-mini asset-remove-btn" type="{{../../type}}" data-aid="{{../../id}}" data-toggle="tooltip" title="{{t "Remove"}} {{../../type}}">
-								<i class="icon-remove"></i>
-							</a>
-						</div> 
-					{{else}}  
-						<small class="bookmark-assert-provider">by {{overview_provider}}</small>
-						<span class="label label-unavailable">Currently Unavailable</span>
-					{{/if}}
-					
+					<small class="bookmark-assert-provider">by {{overview_provider}}</small>
+					<br><div class="btn-group">
+						
+						<a style="display: none" class="btn btn-danger" style="padding-left: 10px" type="{{../../key}}" data-aid="{{../id}}" data-toggle="tooltip" title="{{t "Remove"}} {{../../key}}">
+							<i class="icon-remove"></i> Remove
+						</a>
+						
+						<a class="btn btn-primary asset-reinstall-btn" type="{{../../key}}"  data-platform="{{../attributes.overview_platform}}" data-aid="{{../id}}" data-toggle="tooltip" title="{{t "Remove"}} {{../../key}}">
+							<i class="icon-remove"></i> Reinstall
+						</a>
+					</div>
 				</div>
 			
 			</div>
@@ -55,12 +45,40 @@
 		<div id="no-data-my-items" class="no-data">
 			<i class="icon-inbox"></i>
 			<p>
-            {{t "You still haven't any bookmarks from the Store."}}
+            {{t "You still haven't any apps from the Store."}}
 			</p>
 			<p>
-				<a href="{{url "/assets/gadget/"}}" class="btn btn-primary">{{t "Bookmark now"}}</a>
+				<a href="../store/assets/mobileapp/" class="btn btn-primary">{{t "Install now"}}</a>
 			</p>
 		</div>
 		{{/if}}
+	</div>
+</div>
+
+
+
+
+<div id="devicesList" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:700px" aria-hidden="true">
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+		aria-hidden="true">
+			x
+		</button>
+		<h4 id="myModalLabel">Select your device to reinstall</h4>
+	</div>
+	<div class="modal-body">
+
+		{{#devices}}
+		<div data-dismiss="modal"  class="span1 text-center device-image-block-modal" style="text-align: center; cursor: pointer"
+		data-device-id="{{id}}" data-platform="{{platform}}">
+			<img class="device-image-modal" style="height: 100px" data-device-id="{{id}}" data-platform="{{platform}}"
+			src="/assets/wso2mobile/img/models/{{model}}.png">
+			<div class="text-center" style="font-size: x-small">
+				{{name}}
+			</div>
+		</div>
+		{{/devices}}
+
 	</div>
 </div>

@@ -83,6 +83,10 @@ $(function() {
 		}
 	});
 
+	//$('.icon-gadget').addClass('icon-cog');
+	//$('.icon-site').addClass('icon-globe');
+    //$('.icon-ebook').addClass('icon-file-text');
+    $('.icon-mobileapp').addClass('icon-mobile-phone');
 
 	$('#sso-login').click(function() {
 		$('#sso-login-form').submit();
@@ -98,7 +102,15 @@ $(function() {
         window.location = url;
     });
 
+	$(".dropdown-menu").niceScroll();
 
+	$(".dropdown-menu").mouseover(function() {
+		$('div[id^="ascrail"]').css('visibility', 'visible');
+		$(".dropdown-menu").getNiceScroll().resize();
+	}).mouseleave(function() {
+		$('div[id^="ascrail"]').css('visibility', 'hidden');
+	});
+	
 	$('.dropdown-toggle').click(function(){
 		window.location = $(this).attr('href');
 	});

@@ -5,9 +5,11 @@
  ;
  */
 
-var opened = false, currentPage = 1, infiniteScroll = null;
+var opened = false, currentPage = 1, totalPages;
 
 $(function() {
+	var paging = store.asset.paging;
+	paging.current = 1;
 
 	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
 		var parent = $(this).parent().parent().parent();
@@ -33,7 +35,7 @@ $(function() {
 		caramel.data({
 			title : null,
 			header : ['header'],
-			body : ['assets', 'sort-assets']
+			body : ['assets', 'pagination', 'sort-assets']
 		}, {
 			url : url,
 			success : function(data, status, xhr) {
@@ -56,28 +58,21 @@ $(function() {
 	};
 
 	var loadAssetsScroll = function(url) {
-		//TO-DO 
-		/* As tags are not Indexing so far
-		*  Assert pagination and is not supporteed and There for infiniteScroll is disable to 'Tag'
-		* */
-		if(url.indexOf('tag')== -1){
 		caramel.data({
 			title : null,
-			body : ['assets']
+			header : ['header'],
+			body : ['assets', 'pagination', 'sort-assets']
 		}, {
 			url : url,
 			success : function(data, status, xhr) {
-                infiniteScroll = data.body.assets.context.assets.length >= 12;
-                currentPag = 1;
 				renderAssetsScroll(data);
 				$('.loading-inf-scroll').hide();
 			},
 			error : function(xhr, status, error) {
-                infiniteScroll = false;
+
 			}
 		});
 		$('.loading-inf-scroll').show();
-		}
 	};
 
 	$(document).on('click', '#ul-sort-assets li a', function(e) {
@@ -99,23 +94,31 @@ $(function() {
 		loadAssets(url);
 	});
 
-	var scroll = function() {
+	
 
-		if(infiniteScroll || (store.asset.paging.size >= 12 && infiniteScroll == null)) {
+	var infiniteScroll = function() {
+		totalPages = $('#assets-container').data('pages');
+
+		if(currentPage < totalPages) {
 			if($(window).scrollTop() + $(window).height() >= $(document).height() * .8) {
-				var url = caramel.url(store.asset.paging.url + (++currentPage));
+				var selType = $('.selected-type').data('sort'), pathName = window.location.pathname, search = window.location.search;
+				search += (search != "") ? '&' : '?';
+
+				var url = pathName + search + 'page=' + (++currentPage);
+
 				loadAssetsScroll(url);
-				$(window).unbind('scroll', scroll);
+				$(window).unbind('scroll', infiniteScroll);
 				setTimeout(function() {
-					$(window).bind('scroll', scroll);
+					$(window).bind('scroll', infiniteScroll);
 				}, 500);
 			}
 		} else {
+
 			$('.loading-inf-scroll').hide();
 		}
 	}
 
-	$(window).bind('scroll', scroll);
+	$(window).bind('scroll', infiniteScroll);
 
 	$("a[data-toggle='tooltip']").tooltip();
 	

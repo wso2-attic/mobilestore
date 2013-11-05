@@ -9,8 +9,6 @@ var resources = function (page, meta) {
 var format = function (context) {
     //adding enriched context for paginating template
     var log = new Log();
-    var avg = context.asset.rating.average;
-   
     if(context.type === 'gadget') {
         context.asset_css = "cog";
 
@@ -23,25 +21,6 @@ var format = function (context) {
     }else{
         context.asset_css = "link";
     }
-    
-    context.asset.rating.ratingPx = ratingToPixels(avg);
-    
+
     return context;
 };
-
-var formatRatings = function(context){
-	var avg;
-	for(var i in context){
-		avg = context[i].rating;
-		context[i].ratingPx = ratingToPixels(avg);
-	}
-
-	return context;
-}
-var ratingToPixels = function(avg) {
-	var STAR_WIDTH = 84;
-	var MAX_RATING = 5;
-
-	var ratingPx = (avg / MAX_RATING) * STAR_WIDTH;
-	return ratingPx;
-}

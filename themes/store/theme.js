@@ -44,20 +44,17 @@ var engine = caramel.engine('handlebars', (function () {
                         return theme.__proto__.resolve.call(theme, path);
                     };
                 partials(new File(resolve('partials')));
-                return options.fn(this);
+                return options.fn(context);
             });
         },
         render: function (data, meta) {
-            if (request.getParameter('debug') == '1') {
-                response.addHeader("Content-Type", "application/json");
-                print(stringify(data));
-            } else {
-                this.__proto__.render.call(this, data, meta);
-            }
+            //print(data);
+            this.__proto__.render.call(this, data, meta);
+
         },
         globals: function (data, meta) {
             var store = require('/modules/store.js'),
-                user = require('store').server.current(meta.session);
+                user = require('/modules/user.js').current(meta.session);
             return 'var store = ' + stringify({
                 user: user ? user.username : null
             });

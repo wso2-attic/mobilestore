@@ -10,45 +10,36 @@
                                 <div class="store-my-item">
 
                                     <div class="store-my-item-thumbnail">
-                                    {{#if ../isPublished}}
-                                        <a href="{{url "/assets/"}}{{../../type}}/{{../../id}}"><img
+                                        <a href="{{url "/assets/"}}{{../../key}}/{{../id}}"><img
                                                 src="{{images_thumbnail}}"></a>
-                                        <div class="store-my-item-info">
-                                 
-                                        <a class="asset-title" href="{{url "/asset/"}}{{../../type}}/{{../../id}}">
+                                    </div>
+                                    <div class="store-my-item-info">
+                                        <a class="asset-title" href="{{url "/asset/"}}{{../../key}}/{{../id}}">
                                             <strong>{{overview_name}}</strong>
                                         </a>
                                         <small class="bookmark-assert-provider">by {{overview_provider}}</small>
+                                        <br>
+
                                         <div class="btn-group">
                                             <a class="btn btn-mini" data-toggle="tooltip"
-                                               title="{{t "View"}} {{../../type}}"
-                                               href="{{url "/assets/"}}{{../../type}}/{{../../id}}">
+                                               title="{{t "View"}} {{../../key}}"
+                                               href="{{url "/asset/"}}{{../../key}}/{{../id}}">
                                                 <i class="icon-eye-open"></i>
                                             </a>
-                                            <a class="btn btn-popover btn-mini {{../../type}}"
+                                            <a class="btn btn-popover btn-mini {{../../key}}"
                                                data-content='&lt;iframe src="{{../../../../URL}}/gadgets/ifr?url={{overview_url}}"&gt;&lt;/iframe&gt;'
                                                data-toggle="popover" data-placement="top"
-                                               title="{{t "Embed this"}} {{../../type}}">
+                                               title="{{t "Embed this"}} {{../../key}}">
                                                 <i class="icon-angle-left"></i> <i class="icon-angle-right"></i>
                                             </a>
-                                            <a class="btn btn-mini asset-remove-btn" type="{{../../type}}"
-                                               data-aid="{{../../id}}" data-toggle="tooltip"
-                                               title="{{t "Remove"}} {{../../type}}">
+                                            <a class="btn btn-mini asset-remove-btn" type="{{../../key}}"
+                                               data-aid="{{../id}}" data-toggle="tooltip"
+                                               title="{{t "Remove"}} {{../../key}}">
                                                 <i class="icon-remove"></i>
                                             </a>
                                         </div>
                                     </div>
-                                     {{else}}
-										<img src="{{images_thumbnail}}">
-										<div class="store-my-item-info">
-	                                        <a class="asset-title">
-	                                            <strong>{{overview_name}}</strong>
-	                                        </a>
-	                                        <small class="bookmark-assert-provider">by {{overview_provider}}</small>    
-	                                        <span class="label label-unavailable">Currently Unavailable</span>                                    
-                                        </div> 
-									{{/if}}           
-                                    </div>
+
                                 </div>
                             {{/attributes}}
                         {{/each}}
@@ -60,11 +51,11 @@
                 <i class="icon-inbox"></i>
 
                 <p>
-                    {{t "You still haven't any bookmarks from the Store."}}
+                    {{t "You still haven't any apps from the Store."}}
                 </p>
 
                 <p>
-                    <a href="../" class="btn btn-primary">{{t "Bookmark now"}}</a>
+                    <a href="../" class="btn btn-primary">{{t "Install Now"}}</a>
                 </p>
             </div>
         {{/if}}

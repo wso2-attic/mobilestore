@@ -8,31 +8,32 @@
                             <div class="asset-banner">
                                 <img src="{{images_banner}}">
                             </div>
-                        	<div class="asset-intro-box">
-                            	<div><img src="{{images_thumbnail}}"></div>
-                            	<div class="asset-intro-inner">
-	                            	<h3><span>{{overview_name}}</span>
-	                               		<small>{{overview_version}}</small>
-	                            	</h3>
-	                            	<div class="star-rating">
-										<div class="asset-rating">
-				                            <div class="asset-rating-{{../rating/average}}star">
-				
-				                            </div>
-				                        </div>
-										<small> by {{overview_provider}} </small>
-									</div>
-                            	</div>
-							
-								<a data-type="gadget" class="btn btn-primary" id="btn-add-gadget"
-                           href="{{url "/assets"}}/{{../type}}/{{../id}}">View</a>
-							</div>
+                        <div class="asset-intro-box">
+                            <img src="{{images_thumbnail}}">
+                            <h3><span>{{overview_name}}</span>
+                                <small>{{overview_version}}</small>
+                            </h3>
+
                         {{/attributes}}
+                        <br>
+					<span class="star-rating">
+						<div class="asset-rating">
+                            <div class="asset-rating-{{rating.average}}star">
+
+                            </div>
+                        </div>
+						<small> by {{attributes.overview_provider}} </small>
+					</span>
+
+                        <a data-type="gadget" class="btn btn-primary" id="btn-add-gadget"
+                           href="{{url "/assets"}}/{{type}}/{{id}}">View</a>
 
                     </div>
-				{{/each}}
-            </div>
 
+                    </div>
+                {{/each}}
+
+            </div>
             <div class="clearfix"></div>
             <a class="prev" id="asset-slideshow-prev" href="#"><span>prev</span></a>
             <a class="next" id="asset-slideshow-next" href="#"><span>next</span></a>
@@ -44,24 +45,24 @@
     <div id="slideshow-clearfix"></div>
 {{/if}}
 
-{{#each assets}}
+{{#itr recentAssets}}
     <div class="assets-container">
-        <h3 class="asset-type-default asset-title-separator asset-type-{{type}}"><span>Recent {{plural}}</span>
+        <h3 class="asset-title-separator asset-type-{{key}}"><span>{{#if ../recent}}Recent {{/if}}Mobile Apps</span>
 
-            <div class="pagination top-asset-slideshow-pag" id="top-asset-slideshow-pag-{{type}}"></div>
+            <div class="pagination top-asset-slideshow-pag" id="top-asset-slideshow-pag-{{key}}"></div>
         </h3>
 
         <div class="top-asset-slideshow-cont">
             <div class="html_carousel">
-                <div id="top-asset-slideshow-{{type}}">
-                    {{#if assets}}
-                        {{#each assets}}
+                <div id="top-asset-slideshow-{{key}}">
+                    {{#if value}}
+                        {{#each value}}
                             {{#attributes}}
                                 <div class="slide asset" data-id="{{../id}}" data-type="{{../type}}">
                                     <a href="#">
                                         <div class="asset-icon">
                                             {{#if ../indashboard}}
-                                                <i class="icon-bookmark store-bookmark-icon"></i>
+                                                <i class="icon-mobile-phone store-mobileapp-icon"></i>
                                             {{/if}}
                                             <a href="{{url "/assets"}}/{{../type}}/{{../id}}"><img
                                                     src="{{#if images_thumbnail}}{{images_thumbnail}}{{/if}}"></a>
@@ -82,7 +83,7 @@
                                             <ul>
                                                 <li>
                                                     <h4>{{t "Category"}}</h4>
-                                                    <a class="asset-category" href="#">{{../../singular}}</a>
+                                                    <a class="asset-category" href="#">{{cap ../type}}</a>
                                                 </li>
                                                 <li>
                                                     <h4>{{t "Author"}}</h4>
@@ -92,7 +93,7 @@
                                             </ul>
                                             {{#dyn asset=../type}}
                                                 {{#mergeContext ssoParam=../../../../../sso userParam=../../../../../user thisAsset=../../this}}
-                                                    {{>top-asset-utilization}}
+                                                   
                                                 {{/mergeContext}}
                                             {{/dyn}}
                                         </div>
@@ -110,5 +111,5 @@
 
         </div>
     </div>
-{{/each}}
+{{/itr}}
 

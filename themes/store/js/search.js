@@ -114,10 +114,9 @@ $(function () {
      };
      */
 
-	var buildParams = function(query) {
-	    return 'query=' + query;
-	};
-
+    var buildParams = function (query) {
+        return (query.indexOf('=') === -1) ? 'query=' + query : 'fields=true&' + query;
+    };
     var search = function () {
         var url, searchVal = $('#search').val();
         //var url, searchVal = test($('#search').val());
@@ -127,7 +126,7 @@ $(function () {
             caramel.data({
                 title: null,
                 header: ['header'],
-                body: ['assets', 'sort-assets']
+                body: ['assets', 'pagination', 'sort-assets']
             }, {
                 url: url,
                 success: function (data, status, xhr) {
@@ -147,7 +146,7 @@ $(function () {
             });
             theme.loading($('#assets-container').parent());
         } else if (searchVal.length > 0 && searchVal != undefined) {
-            url = caramel.url('/?' + buildParams(searchVal));
+            url = caramel.url('/assets/all/?' + buildParams(searchVal));
             caramel.data({
                 title: null,
                 header: ['header'],
@@ -228,7 +227,6 @@ $(function () {
 
     $('#search-dropdown-arrow').click(function (e) {
         e.stopPropagation();
-        e.preventDefault();
         var icon = $(this).find('i'), cls = icon.attr('class');
         icon.removeClass().addClass(cls == 'icon-sort-down' ? 'icon-sort-up' : 'icon-sort-down');
         if ($('#search').val().length > 0) {
@@ -354,11 +352,11 @@ $(function () {
             var $this = $(this);
             if ($('#search').val().length > 0) {
                 if ($this.find('input').val().length > 0) {
-                    $('#search').val($('#search').val() + ' ' + $this.find('input').attr('name') + ':"' + $this.find('input').val() + '"');
+                    $('#search').val($('#search').val() + '&' + $this.find('input').attr('name') + '=' + $this.find('input').val());
                 }
             } else {
                 if ($this.find('input').val().length > 0) {
-                    $('#search').val($this.find('input').attr('name') + ':"' + $this.find('input').val() + '"');
+                    $('#search').val($this.find('input').attr('name') + '=' + $this.find('input').val());
                 }
             }
 
@@ -368,11 +366,9 @@ $(function () {
 
     $('#search-button2').click(function () {
         $('#search').val('');
-        
         makeQuery();
         if ($('#search').val() == '') return;
         search();
-        $('#search-dropdown-cont input').val('');
         return false;
     });
     
