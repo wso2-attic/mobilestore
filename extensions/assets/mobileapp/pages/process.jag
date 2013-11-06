@@ -1,17 +1,37 @@
 <%
-(function () {
-    var user = require('/modules/user.js'),
-            usr = user.current(session);
+var caramel;
 
-    if (!usr) {
+require('/modules/store.js').exec(function (ctx) {
+    var asset,
+            log = ctx.log,
+            sso = ctx.sso,
+            data = ctx.request.getContent(),
+            store = ctx.store,
+            user = ctx.user,
+            tenantId = ctx.tenantId,
+            configs = ctx.configs,
+            site = ctx.site,
+            matcher = ctx.matcher,
+            inDashboard = false,
+            utility = require('/modules/util.js');
+
+    caramel = require('caramel');
+
+    if (!user) {
         response.sendError(401, 'Unauthorized');
         return;
     }
+    log.info(data);
+    log.info(data.aid);
+    log.info(type);
+    if (!(store.asset(type, data.aid))) {
+        response.sendError(404, 'Not Found');
+        return;
+    }
+    store.subscribe(type, data.aid);
+    print({
+        error: false
+    });
 
-    var aid = request.getParameter('asset'),
-            store = require('/modules/store.js').store(request, session);
-
-    store.subscribe('mobileapp', aid);
-    response.sendRedirect(request.getParameter('destination'));
-})();
+}, request, response, session);
 %>

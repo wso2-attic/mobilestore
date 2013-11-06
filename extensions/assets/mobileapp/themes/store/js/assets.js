@@ -5,17 +5,11 @@
  ;
  */
 
-var opened = false, currentPage = 1, totalPages;
+var opened = false, currentPage = 1, infiniteScroll = null;
 
 $(function() {
-	var paging = store.asset.paging;
-	paging.current = 1;
 
 	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
-		//var parent = $(this).parent().parent().parent();
-		//asset.process(parent.data('type'), parent.data('id'), location.href);
-		//event.stopPropagation();
-		
 		var device = getURLParameter("device");	
 		appToInstall = $(this).data("app");
 		devicePlatform = $(this).data("platform").toLowerCase();
@@ -37,12 +31,6 @@ $(function() {
 		
 	
 		event.stopPropagation();
-		
-		
-		
-		
-		
-		
 	});
 
 	$(document).on('click', '.asset > .asset-details', function(event) {
@@ -63,7 +51,7 @@ $(function() {
 		caramel.data({
 			title : null,
 			header : ['header'],
-			body : ['assets', 'pagination', 'sort-assets', 'devices']
+			body : ['assets', 'sort-assets']
 		}, {
 			url : url,
 			success : function(data, status, xhr) {
@@ -86,21 +74,28 @@ $(function() {
 	};
 
 	var loadAssetsScroll = function(url) {
+		//TO-DO 
+		/* As tags are not Indexing so far
+		*  Assert pagination and is not supporteed and There for infiniteScroll is disable to 'Tag'
+		* */
+		if(url.indexOf('tag')== -1){
 		caramel.data({
 			title : null,
-			header : ['header'],
-			body : ['assets', 'pagination', 'sort-assets']
+			body : ['assets']
 		}, {
 			url : url,
 			success : function(data, status, xhr) {
+                infiniteScroll = data.body.assets.context.assets.length >= 12;
+                currentPag = 1;
 				renderAssetsScroll(data);
 				$('.loading-inf-scroll').hide();
 			},
 			error : function(xhr, status, error) {
-
+                infiniteScroll = false;
 			}
 		});
 		$('.loading-inf-scroll').show();
+		}
 	};
 
 	$(document).on('click', '#ul-sort-assets li a', function(e) {
@@ -122,34 +117,37 @@ $(function() {
 		loadAssets(url);
 	});
 
-	
+	var scroll = function() {
 
-	var infiniteScroll = function() {
-		totalPages = $('#assets-container').data('pages');
-		if (currentPage < totalPages) {
-			if ($(window).scrollTop() + $(window).height() >= $(document).height() * .8) {
-				var selType = $('.selected-type').data('sort'),
-					pathName = window.location.pathname,
-					search = window.location.search;
-				search += (search != "") ? '&' : '?';
-					 
-				var	url = pathName + search + 'page=' + (++currentPage); 
-				
-				loadAssetsScroll(url); 
-				$(window).unbind('scroll', infiniteScroll);
+		if(infiniteScroll || (store.asset.paging.size >= 12 && infiniteScroll == null)) {
+			if($(window).scrollTop() + $(window).height() >= $(document).height() * .8) {
+				var url = caramel.url(store.asset.paging.url + (++currentPage));
+				loadAssetsScroll(url);
+				$(window).unbind('scroll', scroll);
 				setTimeout(function() {
-					$(window).bind('scroll', infiniteScroll);
+					$(window).bind('scroll', scroll);
 				}, 500);
 			}
+		} else {
+			$('.loading-inf-scroll').hide();
 		}
-
 	}
 
-	$(window).bind('scroll', infiniteScroll);
+	$(window).bind('scroll', scroll);
 
 	$("a[data-toggle='tooltip']").tooltip();
+	
+	$('#my-assets').hide();
+	$('.my-assets-link').click(function(){
+
+		if($(this).find('.pull-right').hasClass('icon-angle-down')){
+			$(this).find('.pull-right').removeClass('icon-angle-down').addClass('icon-angle-up');
+		}else{
+			$(this).find('.pull-right').removeClass('icon-angle-up').addClass('icon-angle-down');
+		}
+		$('#my-assets').slideToggle("fast");
+	});
 
 	caramel.loaded('js', 'assets');
 	caramel.loaded('js', 'sort-assets');
-	caramel.loaded('js', 'devices');
 });

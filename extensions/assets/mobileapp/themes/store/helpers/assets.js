@@ -1,20 +1,22 @@
-var resources = function (block, page, area, meta) {
-    return {
-        template: 'assets.hbs',
-        js: ['asset-core.js', 'asset-helpers.js', 'assets.js'],
-        css: ['assets.css'],
-        code: ['store.asset.hbs']
-    };
-};
+var name,
+    log = new Log(),
+    that = this,
+    hps = require('/themes/store/helpers/assets.js');
 
-var currentPage = function (assetsx,ssox,userx, paging, devicex) {
-	 var outx  = {
-        'assets': assetsx,
-        'sso': ssox,
-        'user': userx,
-        'pages': Math.ceil(paging.total/paging.size),
-        'device': devicex
-    };
-    return outx;
-};
+/**
+ * This is to inherit all variables in the default helper
+ */
+for (name in hps) {
+    if (hps.hasOwnProperty(name)) {
+        that[name] = hps[name];
+    }
+}
 
+var fn = that.resources;
+
+var resources = function (page, meta) {
+    var o = fn(page, meta);
+    o.js.push('mobileapp-install.js');
+    o.css.push('mobileapp-custom.css');
+    return o;
+};

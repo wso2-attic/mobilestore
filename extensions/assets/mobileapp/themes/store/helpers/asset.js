@@ -1,26 +1,22 @@
-var resources = function (page, meta) {
-    return {
-        js: ['jquery.MetaData.js', 'jquery.rating.pack.js', 'async.min.js', 'asset-core.js', 'asset.js', 'moment.min.js', 'porthole.min.js', 'devices.js'],
-        css: ['jquery.rating.css', 'asset.css'],
-        code: ['store.asset.hbs']
-    };
-};
+var name,
+    log = new Log(),
+    that = this,
+    hps = require('/themes/store/helpers/asset.js');
 
-var format = function (context) {
-    //adding enriched context for paginating template
-    var log = new Log();
-    if(context.type === 'gadget') {
-        context.asset_css = "cog";
-
-    }else if (context.type === 'site'){
-        context.asset_css = "globe";
-
-    }else if(context.type === 'ebook'){
-        context.asset_css = "book";
-
-    }else{
-        context.asset_css = "link";
+/**
+ * This is to inherit all variables in the default helper
+ */
+for (name in hps) {
+    if (hps.hasOwnProperty(name)) {
+        that[name] = hps[name];
     }
+}
 
-    return context;
+var fn = that.resources;
+
+var resources = function (page, meta) {
+    var o = fn(page, meta);
+    o.js.push('mobileapp-install.js');
+    o.css.push('mobileapp-custom.css');
+    return o;
 };

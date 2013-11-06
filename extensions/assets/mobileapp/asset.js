@@ -1,29 +1,17 @@
-var ASSETS_TYPE = 'mobileapp';
-
-var Manager;
-
-(function () {
-    var asset = require('/modules/asset.js');
-
-    Manager = asset.Manager;
-
-    var list = Manager.prototype.list;
-
-    Manager.prototype.list = function (paging) {
-        var items = list.call(this, paging);
-        //return items.slice(0, 12);
-        return items;
-    };
-}());
-
 var assetLinks = function (user) {
     return {
         title: 'Mobile Apps',
+        isCategorySupport: true,
         links: [
             {
-                title: 'Mobile Apps',
-                url: ''
+                title: 'Devices',
+                url: 'devices',
+                path: 'devices.jag'
+            },
+            {
+                title: 'Install',
+                url: 'process',
+                path: 'process.jag'
             }
-        ],
-		isCategorySupport: true};
+        ]};
 };

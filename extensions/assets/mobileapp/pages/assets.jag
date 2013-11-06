@@ -1,169 +1,120 @@
 <%
 var caramel;
-(function () {
-    var assets, paging, count, current, total, sso, url, mainPage, subPage,title
-            options = {},
-			subscriptions ={},
-	    	subscription = false;
-            log = new Log(),
-            user = require('/modules/user.js').current(session),
-            configs = require('/store.js').config(),
-            store = require('/modules/store.js').store(request, session),
-            site = require('/modules/site.js'),
-            tag = request.getParameter('tag'),
-            query = request.getParameter('query'),
-            fields = request.getParameter('fields'),
-            selectedCategory = request.getParameter('category'),
-            event = require('/modules/event.js');
+
+require('/modules/store.js').exec(function (ctx) {
+    var options, assets, paging, current, total, url, mainPage, subPage, title, selectedCategory, key,
+            log = ctx.log,
+            sso = ctx.sso,
+            query = ctx.params.query,
+            tag = ctx.params.tag,
+            store = ctx.store,
+            user = ctx.user,
+            server = ctx.server,
+            tenantId = ctx.tenantId,
+            configs = ctx.configs,
+            site = ctx.site,
+            subscriptions = {},
+            subscription = false;
 
     caramel = require('caramel');
 
-    log.info('SESSIONS ################ ::' + stringify(application.get('sso_sessions')));
-
-    sso = configs.ssoConfiguration.enabled;
-
     url = '/assets/' + type + '/?' + (tag ? 'tag=' + tag + '&' : '') + (query ? 'query=' + query + '&' : '');
-
-    // log.info("LOGGED_IN_USER (store) " + session.get('LOGGED_IN_USER'));
 
     paging = store.assetsPaging(request);
 
     mainPage = type;
-    
+
     title = store.assetLinks(type).title;
-    
-    if(user){
-	subscriptions = store.subscriptions(type);
-	var count = Object.keys(subscriptions).length;
-	    if(count == 0){
-			subscriptions[type]={};
-		}else{
-			subscription =true;
-		}
-	}	
-     
-    if (tag) {
 
-        total = store.assetCount(type, {
-            tag: tag
-        });
-        subPage = '/ Tag: "' + tag + '"';
-        if (paging.start > total || paging.start < 0) {
-            response.sendError(404, 'Requested page cannot be found');
-            return;
-        }
-        assets = function () {
-            return store.tagged(type, tag, paging);
-        };
-    } else if (query) {
-
-        options = {
-            type: type,
-            query: query
-        };
-        total = store.assetCount(type, options);
-        subPage = '/ Search: "' + query + '"';
-        if (paging.start > total || paging.start < 0) {
-            response.sendError(404, 'Requested page cannot be found');
-            return;
-        }
-        assets = function () {
-            return store.search(options, paging);
-        };
-    } else if (fields) {
-
-        var parts, param, params, value;
-        options = {
-            type: type,
-            attributes: {}
-        };
-        query = '';
-        params = request.getAllParameters();
-        //advanced search is only allowed for fields under overview section
-        for (param in params) {
-            if (param !== 'fields' && params.hasOwnProperty(param)) {
-                options.attributes['overview_' + param.trim().toLocaleLowerCase()] = new RegExp(params[param], "i");
-                if (query !== '') {
-                    query += '&';
-                }
-                query += (param + '=' + params[param]);
+    if (user) {
+        subscriptions = store.subscriptions(type);
+        if (subscriptions[type]) {
+            var count = Object.keys(subscriptions[type]).length;
+            if (count == 0) {
+                subscriptions[type] = {};
+            } else {
+                subscription = true;
             }
         }
-        total = store.assetCount(type, options);
-        subPage = '/ Search: "' + query + '"';
-        if (paging.start > total || paging.start < 0) {
-            response.sendError(404, 'Requested page cannot be found');
-            return;
-        }
-        assets = function () {
-            return store.search(options, paging);
-        };
-    } else {
-
-        total = store.assetCount(type);
-
-
-        if (paging.start > total || paging.start < 0) {
-            response.sendError(404, 'Requested page cannot be found');
-            return;
-        }
-
-
-        assets = function () {
-            return store.assets(type, paging);
-        }
-
     }
-    
-    
-    var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, type);
-	var os = request.getParameter("os");
-	var mamModule = require('modules/mam.js').mam;
-	var mam = new mamModule();
-	var devices = [];
-	log.info(">>User"+stringify(user));
-	if(user !=undefined){
-		var tenantDomain = carbon.server.tenantDomain({"tenantId": user.tenantId});
-		try{
-			devices = parse(mam.getDevices(String(user.username)+"@"+tenantDomain,os));
-		}catch(e){
-			
-		}
-	}
 
-    //Check if there is a type before trying to read attributes
-    /*var type=(type=='null')?null:type;
-    var rxtAttributes={};
-    if(type){
-        log.info('Before obtaining rxt attributes');
-        var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, type);
-        log.info('After obtaining rxt attributes');
-    }*/
-   
-   log.info(selectedCategory);
-   
+    if (tag) {
+        subPage = '/ Tag: "' + tag + '"';
+        assets = store.tagged(type, tag, paging);
+    } else if (query) {
+        query = require('/modules/search.js').build(query);
+        options = {
+            type: type,
+            attributes: query
+        };
+        for (key in query) {
+            if (query.hasOwnProperty(key) && key === 'overview_category') {
+                selectedCategory = query[key];
+            }
+        }
+        subPage = '/ Search: "' + query + '"';
+        assets = store.search(options, paging);
+    } else {
+        if (paging.sort == 'popular') {
+            server.privileged(function () {
+                //TODO:  move to a module.
+                var tenantDomain = user ? user.tenantDomain : "carbon.super";
+                var index = 0, maxTry = 0;
+                var getNextassetSet = function () {
+                    var db = new Database('SOCIAL_CACHE');
+                    var result = db.query("SELECT ID FROM SOCIAL_CACHE WHERE TYPE='" + type.replace(/\W/g, '') + "' AND " +
+                            "TENANT='" + tenantDomain + "' ORDER BY RATING DESC LIMIT " + (paging.start + index) + ",12");
+                    db.close();
+                    index += 12;
+                    return result;
+                };
+                assets = [];
+                var pos, aid, asset;
+                while (assets.length < 12 && maxTry < 10) {
+                    maxTry++;
+                    var result = getNextassetSet();
+                    for (var n = 0; n < result.length && assets.length < 12; n++) {
+                        var combinedAid = String(result[n].ID);
+                        pos = combinedAid.indexOf(':');
+                        aid = combinedAid.substring(pos + 1);
+                        try {
+                            asset = store.asset(type, aid);
+                            asset.indashboard = store.isuserasset(aid, type);
+                            if (configs.lifeCycleBehaviour.visibleIn.indexOf(String(asset.lifecycleState), 0) >= 0) {
+                                assets.push(asset);
+                            }
+                        } catch (e) {
+                            log.warn("error retrieving asset from store ,information might be stale in social cache. id=" +
+                                    combinedAid);
+                        }
+                    }
+                }
+            });
 
-    var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, type);
+        } else {
+            assets = store.assets(type, paging);
+        }
+    }
+
+    var rxtAttributes = require('/modules/util.js').getRXTAttributes(tenantId, type);
 
     caramel.render({
         title: 'Store | Assets',
         user: user,
         sso: sso,
-        header : site.header(tenantId, {
+        header: site.header(tenantId, {
             sso: sso,
             user: user
         }),
         navigation: site.navigation(tenantId),
-       
         search: {
-                   mainPage: mainPage,
-                   subPage: subPage,
-                   isTopAssets: false,
-                   searchFields: rxtAttributes
-               },
+            mainPage: mainPage,
+            subPage: subPage,
+            isTopAssets: false,
+            searchFields: rxtAttributes
+        },
         type: type,
         selectedCategory: selectedCategory,
-        /*tag: tag,*/
         tags: function () {
             return [
                 {
@@ -172,24 +123,21 @@ var caramel;
                 }
             ];
         },
-        assets: assets(),
-        devices: devices,
+        assets: assets,
         paging: {
             url: url + 'sort=' + paging.sort + '&page=',
-            start: paging.start || 0,
-            count: paging.count || store.assetsPageSize(),
-            size: store.assetsPageSize(),
-            total: total,
             sort: paging.sort,
-            tag: tag
+            tag: tag,
+            size: assets.length
         },
         sorting: {
             url: url + 'sort='
         },
+
         myAssets : { user:user, type: type, title: title, subscriptions: subscriptions[type], subscription : subscription},
-        recentAssets: function () {
-            return store.recentAssets(type);
-        }
+        recentAssets: store.recentAssets(type)
+
     });
-}());
+}, request, response, session);
 %>
+

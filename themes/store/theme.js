@@ -69,6 +69,7 @@ var resolve = function (path) {
     var p,
         store = require('/modules/store.js'),
         asset = store.currentAsset();
+new Log().info(path);
     if (asset) {
         p = store.ASSETS_EXT_PATH + asset + '/themes/' + this.name + '/' + path;
         if (new File(p).isExists()) {
