@@ -6,7 +6,7 @@
         {{#attributes}}
             <div class="asset-description-header">
                 <div class="row">
-                    <div class="span12">
+                    <div class="span9">
                         <div class="asset-banner">
                             <img src="{{#if images_banner}}{{images_banner}}{{/if}}">
                         </div>
@@ -17,23 +17,7 @@
                             <small> {{t "Version"}} {{overview_version}}</small>
                             <small> {{t "by"}} {{overview_provider}} </small>
 					<span class="asset-rating">
-                        {{#if ../../user}}
-                            <span class="user-rating" data-rating="{{../../rating.user}}">
-							<input class="auto-submit-star" name="star2" type="radio" class="star"
-                                   value="1"/>
-							<input class="auto-submit-star" name="star2" type="radio" class="star"
-                                   value="2"/>
-							<input class="auto-submit-star" name="star2" type="radio" class="star"
-                                   value="3"/>
-							<input class="auto-submit-star" name="star2" type="radio" class="star"
-                                   value="4"/>
-							<input class="auto-submit-star" name="star2" type="radio" class="star"
-                                   value="5"/>
-						</span>  <div class="rate-num-assert">({{../../rating.user}})</div>
-                        {{else}}
-                            <div class="asset-rating-{{../../rating.average}}star"></div>
-                        {{/if}}
-
+                            <div style="width:{{../rating.ratingPx}}px"></div>
                     </span>
                           {{>asset-utilization ../../.}}
                          </div>
@@ -63,7 +47,7 @@
                     </div>
                     <div class="tab-pane" id="tab-reviews">
                         <iframe name="socialIfr" id="socialIfr"
-                                src="https://localhost:9443/social/?target={{../id}}&user={{../../user.username}}"
+                                src="../../../social/?target={{../../type}}:{{../id}}&user={{../../user.username}}"
                                 width="100%" height="100%" style="height: 300px;"></iframe>
                        	{{#if ../../inDashboard}}
                        		 <div id="comment-content" class="content"></div>

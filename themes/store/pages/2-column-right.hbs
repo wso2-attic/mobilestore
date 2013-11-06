@@ -17,8 +17,6 @@
 
     <link rel="stylesheet" href="{{url "/themes/store/css/jslider.css"}}" type="text/css">
     <link rel="stylesheet" href="{{url "/themes/store/css/jslider.round.plastic.css"}}" type="text/css">
-    
-     <link href="{{url "/extensions/assets/mobileapp/themes/store/css/mobileapps.css"}}" rel="stylesheet">
 
     <link href="{{url "/themes/store/css/styles.css"}}" rel="stylesheet">
     {{css}}
@@ -31,7 +29,7 @@
     <![endif]-->
 
     <!-- Fav and touch icons -->
-    <link rel="shortcut icon" href="{{url "/themes/store/favicon.ico"}}">
+    <link rel="shortcut icon" href="http://wso2.com/files/favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon-precomposed" sizes="144x144"
           href="{{url "/themes/store/img/apple-touch-icon-144-precomposed.png"}}">
     <link rel="apple-touch-icon-precomposed" sizes="114x114"
@@ -47,10 +45,13 @@
 <div id="container-assets" class="container">
 
     <div class="row">
-        <div class="span12">
+        <div class="span9 store-left">
           
             {{include body}}
-        </div>       
+        </div>
+        <div class="span3 store-right">
+            {{include right}}
+        </div>
 
     </div>
     {{>footer}}
@@ -70,45 +71,10 @@
 <script src="{{url "/themes/store/js/jquery.history.js"}}"></script>
 <script src="{{url "/themes/store/js/history-fix.js"}}"></script>
 <script src="{{url "/themes/store/js/jquery.event.mousestop.js"}}"></script>
+<script src="{{url "/themes/store/js/jquery.ba-resize.min.js"}}"></script>
     {{js}}
     {{code}}
 <script src="{{url "/themes/store/js/caramel.handlebars.client.js"}}"></script>
 <script src="{{url "/themes/store/js/caramel-client.js"}}"></script>
-
-<script src="{{url "/extensions/assets/mobileapp/themes/store/assets/noty/jquery.noty.js"}}"></script>
-<script src="{{url "/extensions/assets/mobileapp/themes/store/assets/noty/layouts/center.js"}}"></script>
-<script src="{{url "/extensions/assets/mobileapp/themes/store/assets/noty/themes/default.js"}}"></script>
-
-
-<script>
-$.noty.defaults = {
-	layout: 'center',
-	theme: 'defaultTheme',
-	type: 'alert',
-	text: '',	
-	dismissQueue: true, // If you want to use queue feature set this true
-	template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
-	animation: {
-		open: {height: 'toggle'},
-		close: {height: 'toggle'},
-		easing: 'swing',
-		speed: 100 // opening & closing animation speed
-	},
-	timeout: 1000, // delay for closing event. Set false for sticky notifications
-	force: false, // adds notification to the beginning of queue when set to true
-	modal: true,
-	closeWith: ['click'], // ['click', 'button', 'hover']
-	callback: {
-		onShow: function() {},
-		afterShow: function() {},
-		onClose: function() {},
-		afterClose: function() {}
-	},
-	buttons: false // an array of buttons
-};
-	
-</script>
-
-
 </body>
 </html>

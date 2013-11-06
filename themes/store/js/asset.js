@@ -1,4 +1,14 @@
 $(function () {
+    var $tab = $('#tab-reviews');
+    $('a').click(function(){
+        var tab = $(this).data("type");
+        if(tab=="comments"){
+            $tab.css({position:'static', visibility:'visible'});
+        }else{
+            $tab.css({position:'static', visibility:'hidden'});
+        }
+    });
+
     if (isSocial) {
         var script = document.createElement('script');
         script.type = 'text/javascript';
@@ -16,7 +26,7 @@ $(function () {
                 partial: '/themes/store/partials/pagination.hbs'
             };
 
-        $('#tab-reviews').on('click', '.pagination a', function (e) {
+        $tab.on('click', '.pagination a', function (e) {
             e.preventDefault();
             var page,
                 thiz = $(this),
@@ -159,11 +169,7 @@ $(function () {
     }
     $('#btn-add-gadget').click(function () {
         var elem = $(this);
-        if (store.user) {
-            isAssertTrue(elem.data('aid'), elem.data('type'));
-        } else {
-            asset.process(elem.data('type'), elem.data('aid'), location.href);
-        }
+        asset.process(elem.data('type'), elem.data('aid'), location.href);
     });
 
     $("a[data-toggle='tooltip']").tooltip();

@@ -1,4 +1,4 @@
-var renderAssets, mouseStop, isAssertTrue, addAssert;
+var renderAssets, mouseStop, renderAssetsScroll;
 
 (function () {
     renderAssets = function (data) {
@@ -7,11 +7,9 @@ var renderAssets, mouseStop, isAssertTrue, addAssert;
         caramel.code($('head'), data.body['assets'].resources.code);
         caramel.partials(data._.partials, function () {
             var assets = Handlebars.partials['assets'](data.body.assets.context),
-                paging = Handlebars.partials['pagination'](data.body.pagination.context),
                 sort = Handlebars.partials['sort-assets'](data.body['sort-assets'].context);
             theme.loaded(el, sort);
             el.append(assets);
-            el.append(paging);
             caramel.js($('body'), data.body['assets'].resources.js, 'assets', function () {
                 mouseStop();
             });
@@ -19,13 +17,15 @@ var renderAssets, mouseStop, isAssertTrue, addAssert;
                 updateSortUI();
             });
             $(document).scrollTop(0);
+
+            infiniteScroll = data.body.assets.context.assets.length >= 12;
         });
     };
 
     renderAssetsScroll = function(data){
     	var temp = '{{#slice assets size="4"}}<div class="row-fluid">';
         	temp += '{{#each .}}';
-			temp += '<div class="span3 asset" data-path="{{path}}" data-type="{{type}}">';
+			temp += '<div class="span3 asset" data-id="{{id}}" data-path="{{path}}" data-type="{{type}}">';
 			temp += '	{{#attributes}}';
 			temp += '	<a href="{{url "/assets"}}/{{../type}}/{{../id}}">';
 			temp += '	<div class="asset-icon">';	
@@ -61,7 +61,7 @@ var renderAssets, mouseStop, isAssertTrue, addAssert;
 			temp += '			<a href="#" class="btn disabled btn-added">{{t "Bookmarked"}}</a>';
 			temp += '			{{else}}';
 			temp += '				{{# if ../../../../sso}}';			
-			temp += '				<a href="{{url "/login.jag"}}" class="btn btn-primary asset-add-btn">{{t "Bookmark"}}</a>';							
+			temp += '				<a href="{{url "/login"}}" class="btn btn-primary asset-add-btn">{{t "Bookmark"}}</a>';
 			temp += '				{{else}}';							
 			temp += '					<a href="#" class="btn btn-primary asset-add-btn">{{t "Bookmark"}}</a>';
 			temp += '				{{/if}}';
@@ -83,11 +83,8 @@ var renderAssets, mouseStop, isAssertTrue, addAssert;
        caramel.js($('body'), data.body['assets'].resources.js, 'assets', function () {
                 mouseStop();
             });
-            caramel.js($('body'), data.header['sort-assets'].resources.js, 'sort-assets', function () {
-                updateSortUI();
-            });
     	
-    }
+    };
 
     mouseStop = function () {
     	var windowWidth = $(window).width();
@@ -109,23 +106,4 @@ var renderAssets, mouseStop, isAssertTrue, addAssert;
                 $(this).find('.asset-details').animate({top: offsetTop}, 200);
             });
     };
-
-    isAssertTrue = function (aid,type) {
-	var array = new Array();
-	caramel.get('/apis/asset/'+type,{
-            }, function (data) {
-		for(j = 0; j < data.length; j++){
-		    if(data[j]['id']==aid){
-		       array.push(data[j]['id']);
-		    		}
-        	}
-		addAssert(aid,type,array);
-            });
-	};
-
-     addAssert = function (aid,type,array) {
-	if(array.length>0){
-		asset.process(type, aid, location.href);
-		}	
-	};
 }());
