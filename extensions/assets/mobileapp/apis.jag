@@ -55,7 +55,7 @@ router.post('apps/devices/{deviceid}/install', function(ctx){
 router.post('apps/devices/{deviceid}/uninstall', function(ctx){
 	var asset =  store.assetID(type, ctx.asset);
 	var install_asset = asset.attributes.overview_packagename; 
-	mdmServer.uninstall({packageid: install_asset}, ctx.deviceid);
+	mdmServer.uninstall({identity: install_asset}, ctx.deviceid);
 });
 var buildInstallParam = function(asset){
 	var installParam = configs.mam.archieve_location+asset.attributes.overview_url;
