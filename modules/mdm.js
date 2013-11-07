@@ -51,7 +51,11 @@ var mdm = (function () {
 		},
 		getDevices: function(username, platform){
 			var url = configs.mdm.api+'/store/users/devices';
-			var result = jsonPost(url, {email:username, platform: platform});
+			var payload = {email: String(username)};
+			if(platform!=null){
+				payload.platform = platform;
+			}
+			var result = jsonPost(url, payload);
 			result = parse(unescape(stringify(result.data)));
 			return result;
 		},

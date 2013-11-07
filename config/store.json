@@ -26,6 +26,6 @@
         "api": "%https.ip%/mdm/api"
     },
     "mam":{
-        "archieve_location": "%https.ip%"
+        "archieve_location": "%http.ip%"
     }
 }
