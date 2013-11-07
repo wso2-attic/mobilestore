@@ -78,9 +78,8 @@
 		</button>
 		<h4 id="myModalLabel">Select your device to install</h4>
 	</div>
-	<div class="modal-body">
-
-		{{#../devices}}
+	<div class="modal-body">		
+		{{#devices}}
 		<div data-dismiss="modal"  class="span1 text-center device-image-block-modal" style="text-align: center; cursor: pointer"
 		data-device-id="{{id}}" data-platform="{{platform}}">
 			<img class="device-image-modal" style="height: 100px" data-device-id="{{id}}" data-platform="{{platform}}"
@@ -89,7 +88,7 @@
 				{{name}}
 			</div>
 		</div>
-		{{/../devices}}
+		{{/devices}}
 
 	</div>
 </div>

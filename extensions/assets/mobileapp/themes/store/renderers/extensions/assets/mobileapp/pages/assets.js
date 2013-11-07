@@ -1,4 +1,5 @@
-var render = function (theme, data, meta, require) {
+var render = function (theme, data, meta, require) {	
+	
     var assets = require('/helpers/assets.js');
     theme('2-column-right', {
         title: data.title,
@@ -22,7 +23,7 @@ var render = function (theme, data, meta, require) {
             },
             {
                 partial: 'assets',
-                context: assets.currentPage(data.assets,data.sso,data.user, data.paging)
+                context: assets.currentPage(data.assets,data.sso,data.user, data.paging, data.devices)
             }/*,
             {
                 partial: 'pagination',

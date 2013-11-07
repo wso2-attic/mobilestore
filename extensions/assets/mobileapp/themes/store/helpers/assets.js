@@ -20,3 +20,14 @@ var resources = function (page, meta) {
     o.css.push('mobileapp-custom.css');
     return o;
 };
+
+var currentPage = function (assetsx,ssox,userx, paging, devicesx) {    
+    
+    var outx  = {
+        'assets': assetsx,
+        'sso': ssox,
+        'user': userx,
+        'devices': devicesx
+    };
+    return outx;
+};

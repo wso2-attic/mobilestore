@@ -103,7 +103,7 @@ require('/modules/store.js').exec(function (ctx) {
         var mdmServer = new mdm();
         try{
             var result = mdmServer.getDevices(user.username);
-            devices = result;
+            devices = parse(result);
         }catch(e){
             log.info(e);
         }

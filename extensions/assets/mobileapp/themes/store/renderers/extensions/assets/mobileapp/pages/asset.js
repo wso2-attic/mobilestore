@@ -4,8 +4,7 @@ var render = function(theme, data, meta, require) {
 	var images = data.asset.attributes.images_screenshots.split(",");
 	data.asset.attributes.images_screenshots = images;
 	
-	
-	
+		
 	
 	//print(caramel.build(data));
 	theme('2-column-right', {
@@ -33,7 +32,8 @@ var render = function(theme, data, meta, require) {
                 type : data.type,
                 inDashboard : data.inDashboard,
                 embedURL : data.embedURL,
-                isSocial : data.isSocial
+                isSocial : data.isSocial,
+                devices : data.devices
             })
         }],
 		right : [
