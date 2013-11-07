@@ -16,7 +16,7 @@ var fn = that.resources;
 
 var resources = function (page, meta) {
     var o = fn(page, meta);
-    o.js.push('mobileapp-install.js');
+    o.js.push('devices.js');
     o.css.push('mobileapp-custom.css');
     return o;
 };
