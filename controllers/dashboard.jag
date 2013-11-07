@@ -50,7 +50,7 @@ require('/modules/store.js').exec(function (ctx) {
     }
 
     caramel.render({
-        'title': 'Store | My Items',
+        'title': 'Store | My Apps',
         user: user,
         sso: sso,
         header: site.header(tenantId, {
