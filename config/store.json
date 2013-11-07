@@ -22,10 +22,10 @@
         "storeAcs" : "%https.host%/store/acs",
         "keyStoreName": "/repository/resources/security/wso2carbon.jks"
     },
-    'mdm': {
-        'api': "%https.host%/mdm/api"
-    }
-    'mam':{
-        'archieve_location': '%https.host%'
+    "mdm": {
+        "api": "%https.host%/mdm/api"
+    },
+    "mam":{
+        "archieve_location": "%https.host%"
     }
 }
