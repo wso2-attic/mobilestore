@@ -1,14 +1,6 @@
-$(function () {
-    var $tab = $('#tab-reviews');
-    $('a').click(function(){
-        var tab = $(this).data("type");
-        if(tab=="comments"){
-            $tab.css({position:'static', visibility:'visible'});
-        }else{
-            $tab.css({position:'static', visibility:'hidden'});
-        }
-    });
+appToInstall = null;
 
+$(function () {
     if (isSocial) {
         var script = document.createElement('script');
         script.type = 'text/javascript';
@@ -26,7 +18,7 @@ $(function () {
                 partial: '/themes/store/partials/pagination.hbs'
             };
 
-        $tab.on('click', '.pagination a', function (e) {
+        $('#tab-reviews').on('click', '.pagination a', function (e) {
             e.preventDefault();
             var page,
                 thiz = $(this),
@@ -168,8 +160,36 @@ $(function () {
          })*/
     }
     $('#btn-add-gadget').click(function () {
-        var elem = $(this);
-        asset.process(elem.data('type'), elem.data('aid'), location.href);
+       /* var elem = $(this);
+        if (store.user) {
+            isAssertTrue(elem.data('aid'), elem.data('type'));
+        } else {
+            asset.process(elem.data('type'), elem.data('aid'), location.href);
+        }*/
+       
+       var device = getURLParameter("device");	
+		appToInstall = $(this).data("app");
+	   devicePlatform = $(this).data("platform").toLowerCase();
+	
+		
+		$(".device-image-block-modal").each(function(index) {	
+			var platform = $(this).data("platform").toLowerCase();
+			if(devicePlatform != platform){
+				$(this).css("display", "none");
+			}
+		
+		});
+		
+		if(!(device > 0)){
+			$('#devicesList').modal('show');
+		}else{			
+			performInstalltion(device, appToInstall);
+		}
+		
+       
+       
+       
+       
     });
 
     $("a[data-toggle='tooltip']").tooltip();

@@ -10,6 +10,7 @@ var opened = false, currentPage = 1, infiniteScroll = null;
 $(function() {
 
 	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
+		
 		var device = getURLParameter("device");	
 		appToInstall = $(this).data("app");
 		devicePlatform = $(this).data("platform").toLowerCase();
@@ -27,8 +28,6 @@ $(function() {
 		}else{			
 			performInstalltion(device, appToInstall);
 		}				
-	
-		
 	
 		event.stopPropagation();
 	});
