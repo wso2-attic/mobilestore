@@ -5,7 +5,7 @@ require('/modules/store.js').exec(function (ctx) {
     var asset,
             log = ctx.log,
             sso = ctx.sso,
-            data = ctx.request.getContent(),
+            aid = ctx.params.asset,
             store = ctx.store,
             user = ctx.user,
             tenantId = ctx.tenantId,
@@ -21,17 +21,12 @@ require('/modules/store.js').exec(function (ctx) {
         response.sendError(401, 'Unauthorized');
         return;
     }
-    log.info(data);
-    log.info(data.aid);
-    log.info(type);
-    if (!(store.asset(type, data.aid))) {
+
+    if (!(store.asset(type, aid))) {
         response.sendError(404, 'Not Found');
         return;
     }
-    store.subscribe(type, data.aid);
-    print({
-        error: false
-    });
-
+    store.subscribe(type, aid);
+    response.sendRedirect(request.getParameter('destination'));
 }, request, response, session);
 %>
