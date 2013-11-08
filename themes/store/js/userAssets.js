@@ -114,7 +114,7 @@ $(".device-image-block-modal").click(function(index) {
 	
 	var deviceId = $(this).data("deviceId");
 	jQuery.ajax({
-      url: "/store/apps/devices/" + deviceId + "/reinstall", 
+      url: "/store/apps/devices/" + deviceId + "/install", 
       type: "POST",
       dataType: "json",	
       data : {"asset": appToReinstall}			      
