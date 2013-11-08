@@ -6,7 +6,7 @@ var router = new goose({CONTEXT: "/store/"});
 var configs = require('/config/store.js').config();
 var log =new Log();
 var store = require("/modules/store.js").store(request, session);
-var user = require('store').user.current(session);
+var user = require('store').user;
 var process = require("process");
 var mdm = require('/modules/mdm.js').mdm;
 var mdmServer = new mdm();
@@ -59,7 +59,7 @@ router.post('apps/devices/{deviceid}/uninstall', function(ctx){
 });
 var buildInstallParam = function(asset){
 	var installParam = configs.mam.archieve_location+asset.attributes.overview_url;
-	if (ctx.platform.toUpperCase() == 'IOS'){
+	if (asset.attributes.overview_platform.toUpperCase() == 'IOS'){
 		installParam = configs.mam.archieve_location+"/mam/api/apps/install/ios/"+asset.id;
 	}
 	if(asset.attributes.overview_type == "Market"){
