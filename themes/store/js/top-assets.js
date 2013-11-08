@@ -86,15 +86,15 @@ var applyTopAssetsSlideshow = function(){
 		
 	if(size<=3){
 		visible = 1;
-		$('#asset-slideshow-cont .html_carousel').css('margin-left', 163);
+		//$('#asset-slideshow-cont .html_carousel').css('margin-left', 163);
 	} else {
 		visible = 3;
 	}
 	
 	$("#asset-slideshow").carouFredSel({
-		items : {
-			visible : visible
-		},
+		
+		items : 3,
+		 width : "100%",
 		height : 300,
 		scroll : 1,
 		auto : true,
