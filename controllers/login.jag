@@ -11,7 +11,11 @@
             encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(dataConfi.ssoConfiguration.issuer),
             log = new Log(),
             postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
-
+  var payload = request.getParameter("id");
+  var platform = request.getParameter("platform");
+  if(payload!=undefined){
+    relayState= relayState+"?id="+payload+"&platform="+platform;
+  }
     if (!session.get("Loged")) {
         %>
 
