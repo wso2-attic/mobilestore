@@ -63,6 +63,9 @@ var buildInstallParam = function(asset){
 		installParam = configs.mam.archieve_location+"/mam/api/apps/install/ios/"+asset.id;
 	}
 	if(asset.attributes.overview_type == "Market"){
+		if(ctx.platform.toUpperCase() == 'IOS'){
+			installParam = ctx.appid;
+		}
 		installParam = asset.attributes.overview_packagename;
 	}
 	if(asset.attributes.overview_platform.toUpperCase()=='WEBAPP'){
