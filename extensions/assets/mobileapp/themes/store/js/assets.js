@@ -17,8 +17,10 @@ $(function() {
 		
 		$(".device-image-block-modal").each(function(index) {	
 			var platform = $(this).data("platform").toLowerCase();
-			if(devicePlatform != platform){
-				$(this).css("display", "none");
+			if(devicePlatform != "webapp"){
+				if(devicePlatform != platform){
+					$(this).css("display", "none");
+				}
 			}
 		
 		});
