@@ -29,7 +29,7 @@ var mdm = (function () {
 	function jsonPost(postUrl, postData){
         	var url = postUrl;
 			var data = postData;
-			data = JSON.stringify({"data":data});
+			data = JSON.stringify({"data":data, "SAML_TOKEN": session.get("samlresponse")});
 			var result = post(url, data, {
 				"Content-Type": "application/json",
 			    "User-Agent" : "Jaggery-XHR",
