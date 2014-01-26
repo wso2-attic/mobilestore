@@ -46,7 +46,7 @@ var mdm = (function () {
 			var result = jsonPost(url, payload);
 		},
 		installWebClip: function(payload, device){
-			var url =  configs.mdm.api+'/devices/'+device+'/operations/WEBCLIP';
+			var url =  configs.mdm.api+'/devices/'+device+'/WEBCLIP';
 			var result = jsonPost(url, payload);
 		},
 		getDevices: function(username, platform){
